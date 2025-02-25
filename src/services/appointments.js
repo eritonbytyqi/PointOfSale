@@ -25,3 +25,4 @@ export async function storeAppointment(form) {
         return null;
     }
 }
+

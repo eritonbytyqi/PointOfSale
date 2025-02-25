@@ -2,9 +2,19 @@
 import { ref, reactive, onMounted } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
 
-// Form data
+
+
+import { computed } from "vue";
+
+// Filtron doktorët bazuar në departamentin e zgjedhur
+const filteredDoctors = computed(() => {
+    const selectedDepartment = departments.value.find(dept => dept.id === form.department_id);
+    return selectedDepartment ? selectedDepartment.doctors : [];
+});
+ 
 const form = reactive({
-    department_name: "",  // Emri i departamentit shkruhet si tekst
+    department_id: "",
+    doctor_id:"", // ID e departamentit do të ruhet këtu
     fullname: "",
     email: "",
     phone_number: "",
@@ -13,9 +23,23 @@ const form = reactive({
     time: "",
 });
 
-// Gjendja e suksesit ose gabimit
+// Lista e departamenteve që do të mbushet nga API
+const departments = ref([]);
 const message = ref("");
 const success = ref(false);
+
+const fetchDepartments = async () => {
+    try {
+        const response = await get('/api/departments');
+        console.log("Departments Data:", response.data.result.data); // Kontrollo që është array
+        departments.value = response.data.result.data;
+    } catch (error) {
+        console.error("Gabim në marrjen e departamenteve:", error);
+    }
+};
+
+// Thirr funksionin kur komponenti montohet
+onMounted(fetchDepartments);
 
 // Funksioni për të ruajtur një takim
 const submit = async () => {
@@ -32,6 +56,7 @@ const submit = async () => {
 };
 </script>
 
+
 <template>
     <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
         <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
@@ -44,12 +69,35 @@ const submit = async () => {
             </div>
 
             <form @submit.prevent="submit" class="space-y-4">
-                <div>
-                    <label for="department_id" class="block text-sm font-medium text-gray-700">Department:</label>
-                    <input type="text" id="department_id" v-model="form.department_id" required
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="Enter department name" />
-                </div>
+                <div class="space-y-4">
+    <!-- Select për departamentin -->
+    <div>
+        <label for="department_id" class="block text-sm font-medium text-gray-700">Department:</label>
+        <select id="department_id" v-model="form.department_id" required
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="" disabled>Select a department</option>
+            <option v-for="department in departments" :key="department.id" :value="department.id">
+                {{ department.name }}
+            </option>
+        </select>
+    </div>
+
+    <!-- Select për doktorët (shfaqet vetëm nëse një department është zgjedhur) -->
+    <div v-if="form.department_id" class="pl-4 border-l-4 border-blue-500">
+        <label for="doctor_id" class="block text-sm font-medium text-gray-700">Doctor:</label>
+        <select id="doctor_id" v-model="form.doctor_id" required
+            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            <option value="" disabled>Select a doctor</option>
+            <option v-for="doctor in filteredDoctors" :key="doctor.id" :value="doctor.id">
+                {{ doctor.name }}
+            </option>
+        </select>
+    </div>
+</div>
+
+
+
+
 
                 <div>
                     <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name:</label>
