@@ -1,8 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Create from "@/views/Appointments/Create.vue"
+import CreateAppointment from "@/views/Appointments/Create.vue"
 import AppLayout from "@/views/Layout/AppLayout.vue"  
 import Appointments from "@/views/Appointments/Index.vue"
+import CreateDoctor from "@/views/Doctors/Create.vue"
+import Doctors from "@/views/Doctors/Index.vue"
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -31,7 +34,19 @@ const router = createRouter({
         {
           path: '/appointments/create',
           name: 'createAppointment',
-          component: Create,
+          component: CreateAppointment,
+        },
+
+        {
+          path: '/doctors',
+          name: 'doctors',
+          component: Doctors,
+        },
+
+        {
+          path: '/doctors/create',
+          name: 'createDoctor',
+          component: CreateDoctor,
         }
       ]
     },
