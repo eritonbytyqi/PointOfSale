@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import Create from "@/views/Appointments/Create.vue";
-import AppLayout from "@/views/Layout/AppLayout.vue"
+import Create from "@/views/Appointments/Create.vue"
+import AppLayout from "@/views/Layout/AppLayout.vue"  
+import Appointments from "@/views/Appointments/Index.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,10 +23,16 @@ const router = createRouter({
       component: AppLayout,
       children: [
         {
+          path: '/appointments',
+          name: 'appointments',
+          component: Appointments,
+        },
+
+        {
           path: '/appointments/create',
           name: 'createAppointment',
           component: Create,
-        },
+        }
       ]
     },
   ],

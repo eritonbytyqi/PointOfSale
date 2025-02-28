@@ -1,6 +1,9 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
+import InputText from "@/components/InputText.vue";
+
+
 
 
 
@@ -56,13 +59,12 @@ const submit = async () => {
 };
 </script>
 
-
-<template>
+  <template>
     <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
         <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
             <h1 class="text-2xl font-semibold text-gray-800 mb-6">Create Appointment</h1>
 
-            <!-- Mesazhi i suksesit ose gabimit -->
+           
             <div v-if="message" :class="success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
                 class="p-3 rounded-md mb-4">
                 {{ message }}
@@ -70,7 +72,7 @@ const submit = async () => {
 
             <form @submit.prevent="submit" class="space-y-4">
                 <div class="space-y-4">
-    <!-- Select për departamentin -->
+  
     <div>
         <label for="department_id" class="block text-sm font-medium text-gray-700">Department:</label>
         <select id="department_id" v-model="form.department_id" required
@@ -82,7 +84,7 @@ const submit = async () => {
         </select>
     </div>
 
-    <!-- Select për doktorët (shfaqet vetëm nëse një department është zgjedhur) -->
+   
     <div v-if="form.department_id" class="pl-4 border-l-4 border-blue-500">
         <label for="doctor_id" class="block text-sm font-medium text-gray-700">Doctor:</label>
         <select id="doctor_id" v-model="form.doctor_id" required
@@ -95,43 +97,44 @@ const submit = async () => {
     </div>
 </div>
 
-
-
-
-
                 <div>
-                    <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name:</label>
-                    <input type="text" id="fullname" v-model="form.fullname" required
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                        <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
+                        <div class="w-full">
+                            <InputText v-model="form.fullname" required="true" label="Full Name"/>
+                        </div>    
+                        </form>     
                 </div>
-
-                <div>
+                <div>   
                     <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-                    <input type="email" id="email" v-model="form.email" required
+                    <input type="email" id="email" v-model="form.email" required="true"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
                 <div>
-                    <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number:</label>
-                    <input type="text" id="phoneNumber" v-model="form.phoneNumber" required
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                        <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
+                        <div class="w-full">
+                            <InputText v-model="form.phone_number" required="true" label="Phone Number"/>
+                        </div>    
+                        </form>     
                 </div>
 
                 <div>
-                    <label for="personal_id" class="block text-sm font-medium text-gray-700">Personal ID:</label>
-                    <input type="text" id="personal_id" v-model="form.personal_id" required
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                        <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
+                        <div class="w-full">
+                            <InputText v-model="form.personal_id" required="true" label="Personal ID"/>
+                        </div>    
+                        </form>     
                 </div>
 
                 <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
-                    <input type="date" id="date" v-model="form.date" required
+                    <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                    <input type="date" id="time" v-model="form.Date" required="true"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
                 <div>
                     <label for="time" class="block text-sm font-medium text-gray-700">Time:</label>
-                    <input type="time" id="time" v-model="form.time" required
+                    <input type="time" id="time" v-model="form.time" required="true"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
@@ -139,7 +142,8 @@ const submit = async () => {
                     class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md">
                     Save
                 </button>
-            </form>
+            </form> 
         </div>
     </div>
 </template>
+
