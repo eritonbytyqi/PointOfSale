@@ -35,12 +35,12 @@
   
         <!-- Appointments - Calendar icon -->
         <li>
-          <a href="#" class="flex items-center space-x-3 py-2 px-3 text-black rounded-md hover:text-green-600">
+          <RouterLink :to="{name: 'appointments'}" class="flex items-center space-x-3 py-2 px-3 text-black rounded-md hover:text-green-600">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h10M7 16h10M3 4h18M3 20h18"></path>
             </svg>
             <span>Appointments</span>
-          </a>
+          </RouterLink>
         </li>
 
         <li>

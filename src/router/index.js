@@ -5,6 +5,7 @@ import AppLayout from "@/views/Layout/AppLayout.vue"
 import Appointments from "@/views/Appointments/Index.vue"
 import CreateDoctor from "@/views/Doctors/Create.vue"
 import Doctors from "@/views/Doctors/Index.vue"
+import EditDoctor from "@/views/Doctors/Edit.vue"
 
 
 const router = createRouter({
@@ -47,6 +48,12 @@ const router = createRouter({
           path: '/doctors/create',
           name: 'createDoctor',
           component: CreateDoctor,
+        },
+
+        {
+          path: '/doctors/:id/edit',
+          name: 'editDoctor',
+          component: EditDoctor,
         }
       ]
     },

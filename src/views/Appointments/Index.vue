@@ -58,13 +58,13 @@ onMounted(() => {
               <button
                 @click="editAppointment(appointment)"
                 class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
-                Edit
+                Confirm
               </button>
               <!-- Delete Button -->
               <button
                 @click="deleteAppointment(appointment)"
                 class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
-                Delete
+                Cancel
               </button>
             </td>
           </tr>
