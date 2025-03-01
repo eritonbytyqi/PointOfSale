@@ -59,6 +59,7 @@ onMounted(() => {
             <th class="px-6 py-4 text-left border-b font-medium">Surname</th>
             <th class="px-6 py-4 text-left border-b font-medium">Phone</th>
             <th class="px-6 py-4 text-left border-b font-medium">Description</th>
+            <th class="px-6 py-4 text-left border-b font-medium">Department</th>
             <th class="px-6 py-4 text-left border-b font-medium">Actions</th>
           </tr>
         </thead>
@@ -68,6 +69,13 @@ onMounted(() => {
             <td class="px-6 py-4">{{ doctor.surname }}</td>
             <td class="px-6 py-4">{{ doctor.phone }}</td>
             <td class="px-6 py-4">{{ doctor.description }}</td>
+            <!-- Me i shfaq edhe departamentet e doktorit -->
+            <td class="px-6 py-4">
+            <span v-for="(department, index) in doctor.departments" :key="department.id">
+            {{ department.name }} 
+            <span v-if="index < doctor.departments.length - 1">, </span>
+            </span>
+            </td>
             <td class="px-6 py-4 flex space-x-2">
               <RouterLink :to="{ name: 'editDoctor', params: { id: doctor.id } }">
                 <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
