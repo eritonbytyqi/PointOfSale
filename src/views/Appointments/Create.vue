@@ -119,7 +119,7 @@ const submit = async () => {
                 <div>
                         <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
                         <div class="w-full">
-                            <InputText v-model="form.phone_number" required="true" label="Phone Number"/>
+                            <InputText v-model="form.phoneNumber" required="true" label="Phone Number"/>
                         </div>    
                         </form>     
                 </div>
@@ -134,7 +134,7 @@ const submit = async () => {
 
                 <div>
                     <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                    <input type="date" id="time" v-model="form.Date" required="true"
+                    <input type="date" id="time" v-model="form.date" required="true"
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
                 </div>
 
