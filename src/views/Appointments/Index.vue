@@ -46,11 +46,11 @@ onMounted(() => {
         </thead>
         <tbody>
           <tr v-for="appointment in appointments" :key="appointment.id" class="border-b hover:bg-gray-50">
-            <td class="px-6 py-4">{{ appointment.department_id }}</td>
+            <td class="px-6 py-4">{{ appointment.department.name }}</td>
             <td class="px-6 py-4">{{ appointment.fullname }}</td>
             <td class="px-6 py-4">{{ appointment.email }}</td>
             <td class="px-6 py-4">{{ appointment.phoneNumber }}</td>
-            <td class="px-6 py-4">{{ appointment.personalId }}</td>
+            <td class="px-6 py-4">{{ appointment.personal_Id }}</td>
             <td class="px-6 py-4">{{ appointment.date }}</td>
             <td class="px-6 py-4">{{ appointment.time }}</td>
             <td class="px-6 py-4 flex space-x-2">
