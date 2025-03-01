@@ -41,6 +41,7 @@ onMounted(() => {
             <th class="px-6 py-4 text-left border-b font-medium">Personal ID</th>
             <th class="px-6 py-4 text-left border-b font-medium">Date</th>
             <th class="px-6 py-4 text-left border-b font-medium">Time</th>
+            <th class="px-6 py-4 text-left border-b font-medium">Doctor</th>
             <th class="px-6 py-4 text-left border-b font-medium">Actions</th>
           </tr>
         </thead>
@@ -53,6 +54,7 @@ onMounted(() => {
             <td class="px-6 py-4">{{ appointment.personal_Id }}</td>
             <td class="px-6 py-4">{{ appointment.date }}</td>
             <td class="px-6 py-4">{{ appointment.time }}</td>
+            <td class="px-6 py-4">{{ appointment.doctors.name }} {{ appointment.doctors.surname }}</td>
             <td class="px-6 py-4 flex space-x-2">
               <!-- Edit Button -->
               <button

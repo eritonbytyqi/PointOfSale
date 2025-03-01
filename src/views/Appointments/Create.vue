@@ -12,12 +12,18 @@ import { computed } from "vue";
 // Filtron doktorët bazuar në departamentin e zgjedhur
 const filteredDoctors = computed(() => {
     const selectedDepartment = departments.value.find(dept => dept.id === form.department_id);
-    return selectedDepartment ? selectedDepartment.doctors : [];
+    if (selectedDepartment) {
+        // Filtron mjekët pa e lejuar përsëritjen e emrave dhe mbiemrave
+        return selectedDepartment.doctors.filter((doctor, index, self) =>
+            index === self.findIndex((d) => d.name === doctor.name && d.surname === doctor.surname)
+        );
+    }
+    return [];
 });
  
 const form = reactive({
     department_id: "",
-    doctor_id:"", // ID e departamentit do të ruhet këtu
+    doctor_id:"", 
     fullname: "",
     email: "",
     phone_number: "",
@@ -91,7 +97,7 @@ const submit = async () => {
             class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
             <option value="" disabled>Select a doctor</option>
             <option v-for="doctor in filteredDoctors" :key="doctor.id" :value="doctor.id">
-                {{ doctor.name }}
+                {{ doctor.name }} {{ doctor.surname }}
             </option>
         </select>
     </div>
