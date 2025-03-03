@@ -3,11 +3,13 @@ import { ref, onMounted } from 'vue';
 import { getDepartments } from '@/services/departments.js';
 import Spinner from "@/components/Spinner.vue";
 import DeleteModal from "@/views/Departments/DeleteModal.vue";
+import DeleteDoctorModal from "@/views/Doctors/DeleteDoctorModal.vue";
 
 const departments = ref([])
 const showSpinner = ref(false)
 const showDeleteModal = ref(false) 
 const selectedDepartmentId = ref(null) 
+const selectedDoctorId = ref(null);
 
 
 const openDeleteModal = (departmentId) => {
@@ -18,6 +20,18 @@ const openDeleteModal = (departmentId) => {
 
 const closeDeleteModal = () => {
   showDeleteModal.value = false;
+};
+
+const showDeleteDoctorModal = ref(false);
+
+const openDeleteDoctorModal = (departmentId, doctorId) => {
+  selectedDepartmentId.value = departmentId;
+  selectedDoctorId.value = doctorId;
+  showDeleteDoctorModal.value = true;
+};
+
+const closeDeleteDoctorModal = () => {
+  showDeleteDoctorModal.value = false;
 };
 
 onMounted(() => {
@@ -39,6 +53,7 @@ onMounted(() => {
 <template>
   <Spinner v-if="showSpinner"/>
   <DeleteModal v-if="showDeleteModal" :departmentId="selectedDepartmentId" @closeDeleteModal="closeDeleteModal" />
+  <DeleteDoctorModal v-if="showDeleteDoctorModal" :departmentId="selectedDepartmentId" :doctorId="selectedDoctorId" @closeDeleteModal="closeDeleteModal" />
 
   <div class="p-6 bg-gray-50 min-h-screen">
     <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Department Dashboard</h1>
@@ -87,6 +102,12 @@ onMounted(() => {
               + Add Doctor
               </button>
               </RouterLink>
+              <RouterLink :to="{ name: 'deleteDoctor', params: { departmentId: department.id } }">
+              <button 
+              class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-all duration-200">
+              - Remove Doctor
+              </button>
+              </RouterLink>
             </td>
           </tr>
         </tbody>
@@ -121,8 +142,14 @@ onMounted(() => {
         
         addDoctor(departmentId) {
           router.push({ name: "addDoctor", params: { departmentId } });
-        }
+        },
+        deleteDoctor(departmentId) {
+          this.$router.push({ name: "deleteDoctor", params: { departmentId } });
+        },
+
       },
+
+      
     };
     </script>
     

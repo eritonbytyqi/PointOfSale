@@ -88,3 +88,21 @@ export const addDoctorToDepartment = async (departmentId, doctorId) => {
     throw error;
   }
 }
+
+
+export const deleteDoctorFromDepartment = async (departmentId, doctorId) => {
+    try {
+      const response = await axios.delete(
+        'http://127.0.0.1:8000/department/${departmentId}/delete-doctor',
+        {
+          data: { doctorId }, // Laravel DELETE nuk merr të dhëna në body, por disa konfigurime e lejojnë
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      throw error;
+    }
+  };

@@ -10,6 +10,7 @@ import Departments from "@/views/Departments/Index.vue"
 import EditDepartment from "@/views/Departments/Edit.vue"
 import CreateDepartment from "@/views/Departments/Create.vue"
 import AddDoctor from '@/views/Doctors/AddDoctor.vue'
+import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
 
 
 const router = createRouter({
@@ -79,6 +80,11 @@ const router = createRouter({
             name: 'addDoctor',
             component: AddDoctor,
          },
+         {
+          path: 'departments/:departmentId/delete-doctor',
+          name: 'deleteDoctor',
+          component: DeleteDoctor,
+       },
 
       ]
     },
