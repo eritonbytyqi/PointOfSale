@@ -1,17 +1,17 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { getDoctors } from '@/services/doctors.js';
+import { getDepartments } from '@/services/departments.js';
 import Spinner from "@/components/Spinner.vue";
-import DeleteModal from "@/views/Doctors/DeleteModal.vue";
+import DeleteModal from "@/views/Departments/DeleteModal.vue";
 
-const doctors = ref(null)
+const departments = ref([])
 const showSpinner = ref(false)
 const showDeleteModal = ref(false) 
-const selectedDoctorId = ref(null) 
+const selectedDepartmentId = ref(null) 
 
 
-const openDeleteModal = (doctorId) => {
-  selectedDoctorId.value = doctorId;
+const openDeleteModal = (departmentId) => {
+  selectedDepartmentId.value = departmentId;
   showDeleteModal.value = true;
 };
 
@@ -22,13 +22,13 @@ const closeDeleteModal = () => {
 
 onMounted(() => {
   showSpinner.value = true;
-  getDoctors()
+  getDepartments()
     .then((data) => {
       console.log(data.result.data);
-      doctors.value = data.result.data;
+      departments.value = data.result.data;
     })
     .catch((error) => {
-      console.error('Error fetching doctors:', error);
+      console.error('Error fetching departments:', error);
     })
     .finally(() => {
       showSpinner.value = false;
@@ -38,16 +38,16 @@ onMounted(() => {
 
 <template>
   <Spinner v-if="showSpinner"/>
-  <DeleteModal v-if="showDeleteModal" :doctorId="selectedDoctorId" @closeDeleteModal="closeDeleteModal" />
+  <DeleteModal v-if="showDeleteModal" :departmentId="selectedDepartmentId" @closeDeleteModal="closeDeleteModal" />
 
   <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Doctor Dashboard</h1>
+    <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Department Dashboard</h1>
 
     <div class="text-right mb-6">
       <button 
-        @click="navigateToCreateDoctor"
+        @click="navigateToCreateDepartment"
         class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300">
-        Add Doctor
+        Add Department
       </button>
     </div>
 
@@ -56,38 +56,37 @@ onMounted(() => {
         <thead class="bg-blue-100 text-blue-800">
           <tr>
             <th class="px-6 py-4 text-left border-b font-medium">Name</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Surname</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Phone</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Description</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Department</th>
+            <th class="px-6 py-4 text-left border-b font-medium">Doctors</th>
             <th class="px-6 py-4 text-left border-b font-medium">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="doctor in doctors" :key="doctor.id" class="border-b hover:bg-gray-50">
-            <td class="px-6 py-4">{{ doctor.name }}</td>
-            <td class="px-6 py-4">{{ doctor.surname }}</td>
-            <td class="px-6 py-4">{{ doctor.phone }}</td>
-            <td class="px-6 py-4">{{ doctor.description }}</td>
-            <!-- Me i shfaq edhe departamentet e doktorit -->
+          <tr v-for="department in departments" :key="department.id" class="border-b hover:bg-gray-50">
+            <td class="px-6 py-4">{{ department.name }}</td>
             <td class="px-6 py-4">
-            <span v-for="(department, index) in doctor.departments" :key="department.id">
-            {{ department.name }} 
-            <span v-if="index < doctor.departments.length - 1">, </span>
+            <span v-for="(doctor, index) in department.doctors" :key="doctor.id">
+            {{ doctor.name }} {{ doctor.surname }}
+            <span v-if="index < department.doctors.length - 1">, </span>
             </span>
             </td>
             <td class="px-6 py-4 flex space-x-2">
-              <RouterLink :to="{ name: 'editDoctor', params: { id: doctor.id } }">
+              <RouterLink :to="{ name: 'editDepartment', params: { id: department.id } }">
                 <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
                   Edit
                 </button>
               </RouterLink>
 
               <button
-                @click="openDeleteModal(doctor.id)" 
+                @click="openDeleteModal(department.id)" 
                 class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-700 transition-all duration-200">
                 Delete
               </button>
+              <RouterLink :to="{ name: 'addDoctor', params: { departmentId: department.id } }">
+              <button 
+              class="px-4 py-2 bg-green-600 text-white font-semibold rounded-md hover:bg-green-700 transition-all duration-200">
+              + Add Doctor
+              </button>
+              </RouterLink>
             </td>
           </tr>
         </tbody>
@@ -100,51 +99,30 @@ onMounted(() => {
     
     <script>
     export default {
-      data() {
-        return {
-          employees: [
-            {
-              department: 'HR',
-              fullName: 'John Doe',
-              email: 'john.doe@example.com',
-              phoneNumber: '+1234567890',
-              personalId: 'A12345678',
-              date: '2025-02-28',
-              time: '09:00 AM',
-            },
-            {
-              department: 'Finance',
-              fullName: 'Jane Smith',
-              email: 'jane.smith@example.com',
-              phoneNumber: '+0987654321',
-              personalId: 'B87654321',
-              date: '2025-02-28',
-              time: '10:00 AM',
-            },
-            // Add more sample data here as needed
-          ]
-        };
-      },
       methods: {
         // Navigate to the "Create Appointment" page
-        navigateToCreateDoctor() {
-          this.$router.push('/doctors/create');
+        navigateToCreateDepartment() {
+          this.$router.push('/departments/create');
         },
     
         // Handle the "Edit" button click
-        editDoctor(doctors) {
+        editDepartment(departments) {
           // Navigate to the edit page with the appointment details
-          this.$router.push({ name: 'doctors-edit', params: { id: doctors.personalId } });
+          this.$router.push({ name: 'departments-edit', params: { id: departments.id } });
         },
     
         // Handle the "Delete" button click
-        deleteDoctor(index) {
+        deleteDepartment(index) {
           // Ask for confirmation before deleting
-          if (confirm('Are you sure you want to delete this doctor?')) {
+          if (confirm('Are you sure you want to delete this department?')) {
             this.employees.splice(index, 1); // Remove the appointment from the list
           }
+        },
+        
+        addDoctor(departmentId) {
+          router.push({ name: "addDoctor", params: { departmentId } });
         }
-      }
+      },
     };
     </script>
     
