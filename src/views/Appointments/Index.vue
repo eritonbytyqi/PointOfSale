@@ -54,7 +54,7 @@ onMounted(() => {
             <td class="px-6 py-4">{{ appointment.personal_id }}</td>
             <td class="px-6 py-4">{{ appointment.date }}</td>
             <td class="px-6 py-4">{{ appointment.time }}</td>
-            <td class="px-6 py-4">{{ appointment.doctors.name }} {{ appointment.doctors.surname }}</td>
+            <td class="px-6 py-4">{{ appointment.doctor.name }} {{ appointment.doctor.surname }}</td>
             <td class="px-6 py-4 flex space-x-2">
               <!-- Edit Button -->
               <button
