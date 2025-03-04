@@ -12,12 +12,12 @@ export async function getPayments(pageQuery = '', filters = {}) {
         return null;
     }
 }
-export async function showDoctor(id) {
+export async function showPayment(id) {
     try {
-        console.log("Doctor ID:", id); // Kontrollo ID-në
-        console.log("API URL:", 'api/doctors/' + id); // Kontrollo URL-në
+        console.log("Payment ID:", id);
+        console.log("API URL:", 'api/payments/' + id);
         
-        return await get('api/doctors/' + id).then(res =>{
+        return await get('api/payments/' + id).then(res =>{
                 if(res.status === 200){
                     return res.data;
                 }
@@ -41,23 +41,23 @@ export async function storePayment(form) {
         return null;
     }
 }
-export async function updateDoctor(id, form) {
+export async function updatePayment(id, form) {
     try {
        
-        const response = await patch(`api/doctors/${String(id)}`, form);
+        const response = await patch(`api/payments/${String(id)}`, form);
         if (response.status === 200) {
             return response.data;
         }
         return null;
     } catch (e) {
-        console.error("Error updating doctor:", e);
+        console.error("Error updating payment:", e);
         return null;
     }
 }
 
-export async function deleteDoctor(id) {
+export async function deletePayment(id) {
     try {
-        return await destroy('api/doctors/' + id).then(res =>{
+        return await destroy('api/payments/' + id).then(res =>{
                 if(res.status === 200){
                     return res;
                 }
