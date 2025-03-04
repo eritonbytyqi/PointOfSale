@@ -5,6 +5,8 @@ import { getDoctors } from "@/services/doctors.js"; // Merr listën e doktorëve
 import { addDoctorToDepartment } from "@/services/departments.js"; // Metoda për të shtuar doktorin
 import Spinner from "@/components/Spinner.vue";
 
+
+
 const route = useRoute();
 const router = useRouter();
 const departmentId = route.params.departmentId;
@@ -43,7 +45,7 @@ const addDoctor = async () => {
     await addDoctorToDepartment(departmentId, selectedDoctor.value);
     message.value = "Doctor added successfully!";
     success.value = true;
-    router.push({ name: "departments" }); // Kthehu te lista e departamenteve
+    router.push({ name: "department" }); 
   } catch (error) {
     message.value = "Failed to add doctor.";
     success.value = false;

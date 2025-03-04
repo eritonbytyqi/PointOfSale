@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAppointments } from '@/services/appointments.js';
+import { getAppointments, updateAppointmentStatus } from '@/services/appointments.js';
 
 const appointments = ref([]);
 const searchQuery = ref("");
@@ -10,15 +10,33 @@ const showModal = ref(false);
 const selectedAppointment = ref(null);
 const router = useRouter();
 
+// Merr terminet nga API dhe cakto statusin nga localStorage
 onMounted(() => {
   getAppointments().then((data) => {
-    appointments.value = data.result.data.map(appt => ({
+    appointments.value = data?.result?.data?.map(appt => ({
       ...appt,
       status: localStorage.getItem(`appointment-${appt.id}`) || "pending"
-    }));
+    })) || [];
   });
 });
 
+// Funksioni për të ndryshuar statusin e një termini
+const changeStatus = async (appointment, status) => {
+  try {
+    const response = await updateAppointmentStatus(appointment.id, status);
+    if (response) {
+      appointment.status = status;
+      localStorage.setItem(`appointment-${appointment.id}`, status);
+    } else {
+      alert("Failed to update appointment status.");
+    }
+  } catch (error) {
+    console.error("Failed to update appointment status:", error);
+    alert("There was an error updating the appointment status. Please try again.");
+  }
+};
+
+// Konfirmimi i ndryshimit të statusit
 const confirmAction = () => {
   if (selectedAction.value && selectedAppointment.value) {
     changeStatus(selectedAppointment.value, selectedAction.value);
@@ -26,17 +44,12 @@ const confirmAction = () => {
   showModal.value = false;
 };
 
+// Hap modalin për konfirmim
 const openModal = (appointment, action) => {
   selectedAppointment.value = appointment;
   selectedAction.value = action;
   showModal.value = true;
 };
-
-const changeStatus = (appointment, status) => {
-  appointment.status = status;
-  localStorage.setItem(`appointment-${appointment.id}`, status);
-};
-
 
 const actionTexts = {
   confirmed: "confirm",
@@ -44,6 +57,7 @@ const actionTexts = {
   canceled: "cancel"
 };
 
+// Teksti i modalit
 const modalText = computed(() => {
   if (selectedAction.value) {
     return `Are you sure you want to ${actionTexts[selectedAction.value]} this appointment?`;
@@ -57,7 +71,8 @@ const modalText = computed(() => {
     <h1 class="text-4xl text-center text-blue-600 mb-8">Appointments Dashboard</h1>
     
     <div class="flex justify-between mb-4">
-      <input v-model="searchQuery" type="text" placeholder="Search by name" class="p-3 border rounded-lg w-full text-lg max-w-md focus:ring-2 focus:ring-blue-500">
+      <input v-model="searchQuery" type="text" placeholder="Search by name" 
+             class="p-3 border rounded-lg w-full text-lg max-w-md focus:ring-2 focus:ring-blue-500">
       <button 
         @click="router.push('/appointments/create')"
         class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
@@ -81,7 +96,8 @@ const modalText = computed(() => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="appointment in appointments.filter(appt => appt.fullname.toLowerCase().includes(searchQuery.toLowerCase()))" :key="appointment.id"
+          <tr v-for="appointment in appointments.filter(appt => appt.fullname.toLowerCase().includes(searchQuery.toLowerCase()))" 
+              :key="appointment.id"
               :class="{
                 'bg-green-200': appointment.status === 'completed',
                 'bg-red-200': appointment.status === 'canceled',
@@ -107,7 +123,7 @@ const modalText = computed(() => {
     
     <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div class="bg-white p-6 rounded shadow-lg">
-        <p class="text-lg mb-4">{{ modalText }}</p> <!-- Heqja e boldit dhe përdorimi i modalText -->
+        <p class="text-lg mb-4">{{ modalText }}</p>
         <div class="flex justify-center space-x-2">
           <button @click="showModal = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
           <button @click="confirmAction" class="px-4 py-2 bg-blue-500 text-white rounded">Confirm</button>
@@ -116,4 +132,3 @@ const modalText = computed(() => {
     </div>
   </div>
 </template>
-

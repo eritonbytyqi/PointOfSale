@@ -17,7 +17,7 @@ const submit = async () => {
         const response = await post('/api/doctors', form);
         message.value = "Doctor created successfully!";
         success.value = true;
-        console.log(response.data);
+        
     } catch (error) {
         message.value = "Error creating doctor. Please check all fields.";
         success.value = false;

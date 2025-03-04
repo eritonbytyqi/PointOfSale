@@ -2,11 +2,6 @@
 import { ref, reactive, onMounted } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
 import InputText from "@/components/InputText.vue";
-
-
-
-
-
 import { computed } from "vue";
 
 // Filtron doktorët bazuar në departamentin e zgjedhur
