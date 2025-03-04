@@ -1,188 +1,119 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { getAppointments } from '@/services/appointments.js';
 
-const appointments = ref(null);
+const appointments = ref([]);
+const searchQuery = ref("");
+const selectedAction = ref(null);
+const showModal = ref(false);
+const selectedAppointment = ref(null);
+const router = useRouter();
 
 onMounted(() => {
   getAppointments().then((data) => {
-      console.log(data.result.data);
-      appointments.value = data.result.data; // Store the data in the reactive variable
-       // Log the data for debugging
-    })
-    .catch((error) => {
-      console.error('Error fetching appointments:', error); // Handle the error
-    });
+    appointments.value = data.result.data.map(appt => ({
+      ...appt,
+      status: localStorage.getItem(`appointment-${appt.id}`) || "pending"
+    }));
+  });
+});
+
+const confirmAction = () => {
+  if (selectedAction.value && selectedAppointment.value) {
+    changeStatus(selectedAppointment.value, selectedAction.value);
+  }
+  showModal.value = false;
+};
+
+const openModal = (appointment, action) => {
+  selectedAppointment.value = appointment;
+  selectedAction.value = action;
+  showModal.value = true;
+};
+
+const changeStatus = (appointment, status) => {
+  appointment.status = status;
+  localStorage.setItem(`appointment-${appointment.id}`, status);
+};
+
+
+const actionTexts = {
+  confirmed: "confirm",
+  completed: "complete",
+  canceled: "cancel"
+};
+
+const modalText = computed(() => {
+  if (selectedAction.value) {
+    return `Are you sure you want to ${actionTexts[selectedAction.value]} this appointment?`;
+  }
+  return "";
 });
 </script>
 
 <template>
   <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Appointments Dashboard</h1>
-
-    <!-- Button to add an appointment -->
-    <div class="text-right mb-6">
+    <h1 class="text-4xl text-center text-blue-600 mb-8">Appointments Dashboard</h1>
+    
+    <div class="flex justify-between mb-4">
+      <input v-model="searchQuery" type="text" placeholder="Search by name" class="p-3 border rounded-lg w-full text-lg max-w-md focus:ring-2 focus:ring-blue-500">
       <button 
-        @click="navigateToCreateAppointment"
-        class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300">
+        @click="router.push('/appointments/create')"
+        class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
         Add Appointment
       </button>
     </div>
-
-    <!-- Table to display appointments -->
+    
     <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
       <table class="min-w-full table-auto">
-        <thead class="bg-blue-100 text-blue-800">
+        <thead class="bg-gray-100 text-gray-800">
           <tr>
-            <th class="px-6 py-4 text-left border-b font-medium">Department</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Full Name</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Email</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Phone Number</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Personal ID</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Date</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Time</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Doctor</th>
-            <th class="px-6 py-4 text-left border-b font-medium">Actions</th>
+            <th class="px-3 py-2 border-b">Department</th>
+            <th class="px-3 py-2 border-b">Full Name</th>
+            <th class="px-3 py-2 border-b">Email</th>
+            <th class="px-3 py-2 border-b">Phone Number</th>
+            <th class="px-3 py-2 border-b">Personal ID</th>
+            <th class="px-3 py-2 border-b">Date</th>
+            <th class="px-3 py-2 border-b">Time</th>
+            <th class="px-3 py-2 border-b">Doctor</th>
+            <th class="px-3 py-2 border-b">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="appointment in appointments" :key="appointment.id" class="border-b hover:bg-gray-50">
-            <td class="px-6 py-4">{{ appointment.department.name }}</td>
-            <td class="px-6 py-4">{{ appointment.fullname }}</td>
-            <td class="px-6 py-4">{{ appointment.email }}</td>
-            <td class="px-6 py-4">{{ appointment.phoneNumber }}</td>
-            <td class="px-6 py-4">{{ appointment.personal_id }}</td>
-            <td class="px-6 py-4">{{ appointment.date }}</td>
-            <td class="px-6 py-4">{{ appointment.time }}</td>
-            <td class="px-6 py-4">{{ appointment.doctor.name }} {{ appointment.doctor.surname }}</td>
-            <td class="px-6 py-4 flex space-x-2">
-              <!-- Edit Button -->
-              <button
-                @click="editAppointment(appointment)"
-                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
-                Confirm
-              </button>
-              <!-- Delete Button -->
-              <button
-                @click="deleteAppointment(appointment)"
-                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
-                Cancel
-              </button>
+          <tr v-for="appointment in appointments.filter(appt => appt.fullname.toLowerCase().includes(searchQuery.toLowerCase()))" :key="appointment.id"
+              :class="{
+                'bg-green-200': appointment.status === 'completed',
+                'bg-red-200': appointment.status === 'canceled',
+                'bg-orange-200': appointment.status === 'confirmed'
+              }">
+            <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.email }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.phoneNumber }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.personal_id }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.date }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.time }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.doctor.name }} {{ appointment.doctor.surname }}</td>
+            <td class="px-3 py-2 flex flex-col space-y-1">
+              <button @click="openModal(appointment, 'confirmed')" class="px-2 py-1 bg-orange-500 text-white rounded">Confirm</button>
+              <button @click="openModal(appointment, 'completed')" class="px-2 py-1 bg-green-500 text-white rounded">Completed</button>
+              <button @click="openModal(appointment, 'canceled')" class="px-2 py-1 bg-red-500 text-white rounded">Cancel</button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+    
+    <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+      <div class="bg-white p-6 rounded shadow-lg">
+        <p class="text-lg mb-4">{{ modalText }}</p> <!-- Heqja e boldit dhe përdorimi i modalText -->
+        <div class="flex justify-center space-x-2">
+          <button @click="showModal = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
+          <button @click="confirmAction" class="px-4 py-2 bg-blue-500 text-white rounded">Confirm</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-  
-  <script>
-  export default {
-    data() {
-      return {
-        employees: [
-          {
-            department: 'HR',
-            fullName: 'John Doe',
-            email: 'john.doe@example.com',
-            phoneNumber: '+1234567890',
-            personalId: 'A12345678',
-            date: '2025-02-28',
-            time: '09:00 AM',
-          },
-          {
-            department: 'Finance',
-            fullName: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            phoneNumber: '+0987654321',
-            personalId: 'B87654321',
-            date: '2025-02-28',
-            time: '10:00 AM',
-          },
-          // Add more sample data here as needed
-        ]
-      };
-    },
-    methods: {
-      // Navigate to the "Create Appointment" page
-      navigateToCreateAppointment() {
-        this.$router.push('/appointments/create');
-      },
-  
-      // Handle the "Edit" button click
-      editAppointment(employee) {
-        // Navigate to the edit page with the appointment details
-        this.$router.push({ name: 'appointments-edit', params: { id: employee.personalId } });
-      },
-  
-      // Handle the "Delete" button click
-      deleteAppointment(index) {
-        // Ask for confirmation before deleting
-        if (confirm('Are you sure you want to delete this appointment?')) {
-          this.employees.splice(index, 1); // Remove the appointment from the list
-        }
-      }
-    }
-  };
-  </script>
-  
-  <style scoped>
-  /* Adding some basic styles for better presentation */
-  
-  body {
-    font-family: 'Inter', sans-serif;
-  }
-  
-  /* Table Styling */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  thead {
-    background-color: #f3f4f6;
-  }
-  
-  th, td {
-    padding: 12px 16px;
-    text-align: left;
-  }
-  
-  th {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #2c3e50;
-  }
-  
-  td {
-    font-size: 1rem;
-    color: #34495e;
-  }
-  
-  tr:hover {
-    background-color: #f9fafb;
-  }
-  
-  /* Add some spacing for the button */
-  button {
-    transition: background-color 0.2s ease, transform 0.2s ease;
-  }
-  
-  button:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Make the table's rows a bit larger for better readability */
-  tbody tr {
-    font-size: 1rem;
-    color: #6b7280;
-  }
-  
-  /* Use softer background for the page */
-  .bg-gray-50 {
-    background-color: #f9fafb;
-  }
-  
-  </style>
-  
