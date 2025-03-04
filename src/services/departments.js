@@ -71,38 +71,30 @@ export async function deleteDepartment(id) {
 }
 
 
-
-export const addDoctorToDepartment = async (departmentId, doctorId) => {
-  try {
-    const response = await axios.post(
-      `http://127.0.0.1:8000/departments/${departmentId}/add-doctor`,
-      { doctorId }, // Sigurohu që po dërgon të dhënat e duhura
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return response;
-  } catch (error) {
-    throw error;
-  }
+export async function addDoctorToDepartment(departmentId, doctorId) {
+    try {
+        return await post(`api/departments/${departmentId}/add-doctor`, { doctorId }).then(res => {
+            if (res.status === 200) {
+                return res.data;
+            }
+            return null;
+        });
+    } catch (e) {
+        console.error("Error adding doctor to department:", e);
+        return null;
+    }
 }
 
-
-export const deleteDoctorFromDepartment = async (departmentId, doctorId) => {
+export async function deleteDoctorFromDepartment(departmentId, doctorId) {
     try {
-      const response = await axios.delete(
-        'http://127.0.0.1:8000/department/${departmentId}/delete-doctor',
-        {
-          data: { doctorId }, // Laravel DELETE nuk merr të dhëna në body, por disa konfigurime e lejojnë
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      return response;
-    } catch (error) {
-      throw error;
+        return await destroy(`api/departments/${departmentId}/delete-doctor`, { data: { doctorId } }).then(res => {
+            if (res.status === 200) {
+                return res.data;
+            }
+            return null;
+        });
+    } catch (e) {
+        console.error("Error deleting doctor from department:", e);
+        return null;
     }
-  };
+}

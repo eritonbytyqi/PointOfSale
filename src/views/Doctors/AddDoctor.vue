@@ -45,7 +45,7 @@ const addDoctor = async () => {
     await addDoctorToDepartment(departmentId, selectedDoctor.value);
     message.value = "Doctor added successfully!";
     success.value = true;
-    router.push({ name: "department" }); 
+    router.push({ name: "addDoctor" }); 
   } catch (error) {
     message.value = "Failed to add doctor.";
     success.value = false;
