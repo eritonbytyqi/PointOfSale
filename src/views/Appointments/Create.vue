@@ -1,203 +1,320 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch, computed } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
 import InputText from "@/components/InputText.vue";
-
-
-
-
-
-import { computed } from "vue";
 import router from "@/router";
-const existingEmails = ref([]);
-const emailError = ref("");
-
-
 
 // Filtron doktorët bazuar në departamentin e zgjedhur
 const filteredDoctors = computed(() => {
     const selectedDepartment = departments.value.find(dept => dept.id === form.department_id);
     if (selectedDepartment) {
-        // Filtron mjekët pa e lejuar përsëritjen e emrave dhe mbiemrave
         return selectedDepartment.doctors.filter((doctor, index, self) =>
             index === self.findIndex((d) => d.name === doctor.name && d.surname === doctor.surname)
         );
     }
     return [];
 });
- 
+
+const isSunday = (dateString) => {
+    if (!dateString) return false;
+    const date = new Date(dateString);
+    return date.getDay() === 0; // 0 = E diel
+};
+
+// Funksioni për të fshirë datën nëse është e diel
+const handleDateChange = () => {
+    if (isSunday(form.value.date)) {
+        alert("E diel nuk lejohet! Zgjidh një ditë tjetër.");
+        form.value.date = "";
+    }
+};
+
 const form = reactive({
     department_id: "",
-    doctor_id:"", 
+    doctor_id: "", 
     fullname: "",
     email: "",
-    phone_number: "",
+    phoneNumber: "",
     personal_id: "",
     date: "",
     time: "",
 });
 
-// Lista e departamenteve që do të mbushet nga API
+const allAvailableTimes = ref([
+    "08:00:00", "09:00:00", "10:00:00", "11:00:00", "12:00:00",
+    "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00"
+]);
+const availableTimes = ref([]);
+
+// Marrja e orareve të lira për një datë të caktuar
+const fetchAvailableTimes = async () => {
+    if (!form.department_id || !form.doctor_id || !form.date) return;
+
+    try {
+        const response = await get(`/api/appointments/unavailable/${form.department_id}/${form.doctor_id}`, {
+            params: { date: form.date },
+        });
+
+        console.log("API Response:", response.data); // Kontrollo të dhënat e marra nga API
+
+        const bookedTimes = Array.isArray(response.data.data) ? response.data.data : [];
+        console.log("Oraret e zëna:", bookedTimes);
+
+        availableTimes.value = allAvailableTimes.value.filter(time => !bookedTimes.includes(time));
+        console.log("Oraret e lira:", availableTimes.value);
+
+    } catch (error) {
+        console.error("Gabim në marrjen e orareve të zëna:", error);
+    }
+};
+
+watch([() => form.department_id, () => form.date, () => form.doctor_id], fetchAvailableTimes);
+
 const departments = ref([]);
 const message = ref("");
 const success = ref(false);
 
+// Marrja e listës së departamenteve
 const fetchDepartments = async () => {
     try {
         const response = await get('/api/departments');
-        console.log("Departments Data:", response.data.result.data); // Kontrollo që është array
+        console.log("Departments Data:", response.data.result.data);
         departments.value = response.data.result.data;
     } catch (error) {
         console.error("Gabim në marrjen e departamenteve:", error);
     }
 };
-const fetchExistingEmails = async () => {
-    try {
-        const response = await get('/api/appointments');
-        existingEmails.value = response.data.result.data.map(a => a.email);
-    } catch (error) {
-        console.error("Gabim në marrjen e email-ve ekzistues:", error);
-    }
-};
-const checkEmailAvailability = () => {
-    if (existingEmails.value.includes(form.email)) {
-        emailError.value = "This email is already taken!";
-    } else {
-        emailError.value = "";
-    }
-};
 
-onMounted(() => {
-    fetchDepartments();
-    fetchExistingEmails();
+onMounted(fetchDepartments);
+
+// Validimi për secilën fushë
+const errors = reactive({
+    department_id: "",
+    doctor_id: "",
+    fullname: "",
+    email: "",
+    phoneNumber: "",
+    personal_id: "",
+    date: "",
+    time: "",
 });
 
-// Funksioni për të ruajtur një takim
+const validateForm = () => {
+    // Reset the errors first
+    for (const key in errors) {
+        errors[key] = "";
+    }
+
+    let isValid = true;
+
+    // Kontrollojmë çdo fushë
+    if (!form.department_id) {
+        errors.department_id = "Departamenti është i detyrueshëm!";
+        isValid = false;
+    }
+
+    if (!form.doctor_id) {
+        errors.doctor_id = "Doktori është i detyrueshëm!";
+        isValid = false;
+    }
+
+    if (!form.fullname) {
+        errors.fullname = "Emri është i detyrueshëm!";
+        isValid = false;
+    }
+
+    if (!form.email || !validateEmail(form.email)) {
+        errors.email = "Ju lutem, shkruani një email të vlefshëm!";
+        isValid = false;
+    }
+
+    if (!form.phoneNumber || !isValidPhone(form.phoneNumber)) {
+        errors.phoneNumber = "Numri i telefonit duhet të jetë në formatin +383....!";
+        isValid = false;
+    }
+
+    if (!form.personal_id) {
+        errors.personal_id = "ID personale është e detyrueshme!";
+        isValid = false;
+    }
+
+    if (!form.date) {
+        errors.date = "Data është e detyrueshëm!";
+        isValid = false;
+    } else if (isSunday(form.date)) {
+        errors.date = "E diel nuk lejohet! Zgjidh një ditë tjetër.";
+        isValid = false;
+    }
+
+    if (!form.time) {
+        errors.time = "Koha është e detyrueshme!";
+        isValid = false;
+    }
+
+    return isValid;
+};
+
+// Funksioni për të kontrolluar nëse emaili është valid
+const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+};
+
+// Funksioni për të kontrolluar nëse numri i telefonit është valid
+const isValidPhone = (phone) => {
+    const regex = /^\+383[0-9]{8,}$/;
+    return regex.test(phone);
+};
+
+// Funksioni për të kontrolluar nëse është e diel
+
 const submit = async () => {
-     if (emailError.value) {
-        message.value = "Please fix errors before submitting.";
+    await checkEmail(); // Kontrollo emailin para se të dërgohet formulari
+    if (emailExists.value) {
+        message.value = "Ky email është përdorur tashmë!";
         success.value = false;
         return;
     }
-    try {
-        const response = await post('/api/appointments', form);
+    if (validateForm()) {
+        try {
+            const response = await post('/api/appointments', form);
+            console.log("Response Data:", response.data);
 
-        console.log("Response Data:", response.data);
+            if (!response || !response.data || !response.data.result) {
+                console.error("Gabim: Response ose result nuk ekziston!");
+                return;
+            }
 
-        // Kontrollo nëse ka response.data.result përpara se të përdorësh id
-        if (!response || !response.data || !response.data.result) {
-            console.error("Gabim: Response ose result nuk ekziston!");
-            return;
+            const appointmentId = response.data.result.id;
+            if (!appointmentId) {
+                console.error("Gabim: ID nuk u kthye nga API");
+                return;
+            }
+
+            message.value = "Appointment created successfully!";
+            success.value = true;
+
+            router.push({ path: "/payments/create", query: { appointment_id: appointmentId } });
+
+            console.log("Redirecting to payments/create with ID:", appointmentId);
+        } catch (error) {
+            message.value = "Error creating appointment. Please check all fields.";
+            success.value = false;
+            console.error("Gabim:", error);
         }
-
-        const appointmentId = response.data.result.id;
-        if (!appointmentId) {
-            console.error("Gabim: ID nuk u kthye nga API");
-            return;
-        }
-
-        message.value = "Appointment created successfully!";
-        success.value = true;
-
-        router.push({ path: "/payments/create", query: { appointment_id: appointmentId } });
-
-        console.log("Redirecting to payments/create with ID:", appointmentId);
-    } catch (error) {
-        message.value = "Error creating appointment. Please check all fields.";
-        success.value = false;
-        console.error("Gabim:", error);
     }
 };
 
+const emailExists = ref(false);
+
+// Funksioni për të kontrolluar nëse emaili ekziston
+const checkEmail = async () => {
+    if (!form.email) return; // Mos e kontrollo nëse fusha është bosh
+
+    try {
+        const response = await get(`/api/check-email`, { params: { email: form.email } });
+
+        emailExists.value = response.data.exists;
+    } catch (error) {
+        console.error("Gabim në verifikimin e emailit:", error);
+    }
+};
+const addPrefix = () => {
+  if (!form.phoneNumber.startsWith("+383")) {
+    form.phoneNumber = "+383" + form.phoneNumber.replace(/^(\+383)?/, "");
+  }
+
+}
 </script>
 
-  <template>
+<template>
     <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
         <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
             <h1 class="text-2xl font-semibold text-gray-800 mb-6">Create Appointment</h1>
 
-           
             <div v-if="message" :class="success ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
                 class="p-3 rounded-md mb-4">
                 {{ message }}
             </div>
 
             <form @submit.prevent="submit" class="space-y-4">
-                <div class="space-y-4">
+                <div>
+                    <label for="department_id" class="block text-sm font-medium text-gray-700">Department:</label>
+                    <select id="department_id" v-model="form.department_id" required
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select a department</option>
+                        <option v-for="department in departments" :key="department.id" :value="department.id">
+                            {{ department.name }}
+                        </option>
+                    </select>
+                    <p v-if="errors.department_id" class="text-red-500 text-sm mt-1">{{ errors.department_id }}</p>
+                </div>
+
+                <div v-if="form.department_id" class="pl-4 border-l-4 border-blue-500">
+                    <label for="doctor_id" class="block text-sm font-medium text-gray-700">Doctor:</label>
+                    <select id="doctor_id" v-model="form.doctor_id" required
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled>Select a doctor</option>
+                        <option v-for="doctor in filteredDoctors" :key="doctor.id" :value="doctor.id">
+                            {{ doctor.name }} {{ doctor.surname }}
+                        </option>
+                    </select>
+                    <p v-if="errors.doctor_id" class="text-red-500 text-sm mt-1">{{ errors.doctor_id }}</p>
+                </div>
+
+                <InputText v-model="form.fullname" :required="true" label="Full Name"/>
+                <p v-if="errors.fullname" class="text-red-500 text-sm mt-1">{{ errors.fullname }}</p>
+
+                <InputText v-model="form.email" :required="true" label="Email" @blur="checkEmail" />
+                <p v-if="emailExists" class="text-red-500 text-sm mt-1">Ky email është përdorur tashmë!</p>
+                <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
+
+                <div>
+                    <label for="phoneNumber">Phone Number</label>
+                    <input 
+                        id="phoneNumber" 
+                        v-model="form.phoneNumber" 
+                        type="tel" 
+                        :required="true"
+                        @input="addPrefix"
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                    />
+                    <p v-if="errors.phoneNumber" class="text-red-500 text-sm mt-1">{{ errors.phoneNumber }}</p>
+                </div>
   
-    <div>
-        <label for="department_id" class="block text-sm font-medium text-gray-700">Department:</label>
-        <select id="department_id" v-model="form.department_id" required
-            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            <option value="" disabled>Select a department</option>
-            <option v-for="department in departments" :key="department.id" :value="department.id">
-                {{ department.name }}
-            </option>
-        </select>
-    </div>
-
-   
-    <div v-if="form.department_id" class="pl-4 border-l-4 border-blue-500">
-        <label for="doctor_id" class="block text-sm font-medium text-gray-700">Doctor:</label>
-        <select id="doctor_id" v-model="form.doctor_id" required
-            class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-            <option value="" disabled>Select a doctor</option>
-            <option v-for="doctor in filteredDoctors" :key="doctor.id" :value="doctor.id">
-                {{ doctor.name }} {{ doctor.surname }}
-            </option>
-        </select>
-    </div>
-</div>
-
-                <div>
-                        <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
-                        <div class="w-full">
-                            <InputText v-model="form.fullname" required="true" label="Full Name"/>
-                        </div>    
-                        </form>     
-                </div>
-                <div>   
-    <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-    <input type="email" id="email" v-model="form.email" required @blur="checkEmailAvailability"
-        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-    <p v-if="emailError" class="text-red-600 text-sm mt-1">{{ emailError }}</p>
-</div>
-
-
-                <div>
-                        <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
-                        <div class="w-full">
-                            <InputText v-model="form.phoneNumber" required="true" label="Phone Number"/>
-                        </div>    
-                        </form>     
-                </div>
-
-                <div>
-                        <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
-                        <div class="w-full">
-                            <InputText v-model="form.personal_id" required="true" label="Personal ID"/>
-                        </div>    
-                        </form>     
-                </div>
+                <InputText v-model="form.personal_id" :required="true" label="Personal ID"/>
+                <p v-if="errors.personal_id" class="text-red-500 text-sm mt-1">{{ errors.personal_id }}</p>
 
                 <div>
                     <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                    <input type="date" id="time" v-model="form.date" required="true"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                    <input 
+                        type="date" 
+                        id="date" 
+                        v-model="form.date" 
+                        :min="new Date().toISOString().split('T')[0]" 
+                        required
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        @change="handleDateChange" 
+                    />
+                    <p v-if="errors.date" class="text-red-500 text-sm mt-1">{{ errors.date }}</p>
+                    <p v-if="isSunday(form.date)" class="text-red-500 text-sm mt-1">E diel nuk lejohet! Zgjidh një ditë tjetër.</p>
                 </div>
 
                 <div>
-                    <label for="time" class="block text-sm font-medium text-gray-700">Time:</label>
-                    <input type="time" id="time" v-model="form.time" required="true"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                    <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+                    <select v-model="form.time" required
+                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+                    </select>
+                    <p v-if="errors.time" class="text-red-500 text-sm mt-1">{{ errors.time }}</p>
                 </div>
 
-                <button type="submit"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md">
-                    Save
-                </button>
-            </form> 
+                <div class="flex justify-center">
+                    <button type="submit" class="mt-6 py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600">
+                        Create Appointment
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </template>
-
