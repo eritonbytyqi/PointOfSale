@@ -71,14 +71,15 @@ const modalText = computed(() => {
     <h1 class="text-4xl text-center text-blue-600 mb-8">Appointments Dashboard</h1>
     
     <div class="flex justify-between mb-4">
-      <input v-model="searchQuery" type="text" placeholder="Search by name" 
-             class="p-3 border rounded-lg w-full text-lg max-w-md focus:ring-2 focus:ring-blue-500">
-      <button 
-        @click="router.push('/appointments/create')"
-        class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
-        Add Appointment
-      </button>
-    </div>
+  <input v-model="searchQuery" type="text" placeholder="Search by name" 
+         class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-500 w-64">
+  <button 
+    @click="router.push('/appointments/create')"
+    class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
+    Add Appointment
+  </button>
+</div>
+
     
     <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
       <table class="min-w-full table-auto">
