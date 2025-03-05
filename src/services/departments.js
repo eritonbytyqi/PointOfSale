@@ -73,7 +73,7 @@ export async function deleteDepartment(id) {
 
 export async function addDoctorToDepartment(departmentId, doctorId) {
     try {
-        return await post(`api/departments/${departmentId}/add-doctor`, { doctorId }).then(res => {
+        return await post(`api/departments/${departmentId}/add-doctor`, { "doctor_id": doctorId }).then(res => {
             if (res.status === 200) {
                 return res.data;
             }
@@ -85,16 +85,14 @@ export async function addDoctorToDepartment(departmentId, doctorId) {
     }
 }
 
-export async function deleteDoctorFromDepartment(departmentId, doctorId) {
+export const deleteDoctorFromDepartment = async (departmentId, doctorId) => {
     try {
-        return await destroy(`api/departments/${departmentId}/delete-doctor`, { data: { doctorId } }).then(res => {
-            if (res.status === 200) {
-                return res.data;
-            }
-            return null;
-        });
-    } catch (e) {
-        console.error("Error deleting doctor from department:", e);
-        return null;
+      const response = await axios.delete(`/api/departments/${departmentId}/delete-doctor`,
+      {doctor_id: doctorId}
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting doctor:", error);
+      throw error; // Sigurohuni që të dergoni gabimin në front-end
     }
-}
+  };

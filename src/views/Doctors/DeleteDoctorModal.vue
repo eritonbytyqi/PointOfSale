@@ -38,6 +38,7 @@ const deleteDoctor = async () => {
     return;
   }
 
+
   showSpinner.value = true;
   try {
     await deleteDoctorFromDepartment(departmentId, selectedDoctor.value);

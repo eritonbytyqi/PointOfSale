@@ -9,6 +9,10 @@ import InputText from "@/components/InputText.vue";
 
 import { computed } from "vue";
 import router from "@/router";
+const existingEmails = ref([]);
+const emailError = ref("");
+
+
 
 // Filtron doktorët bazuar në departamentin e zgjedhur
 const filteredDoctors = computed(() => {
@@ -47,12 +51,34 @@ const fetchDepartments = async () => {
         console.error("Gabim në marrjen e departamenteve:", error);
     }
 };
+const fetchExistingEmails = async () => {
+    try {
+        const response = await get('/api/appointments');
+        existingEmails.value = response.data.result.data.map(a => a.email);
+    } catch (error) {
+        console.error("Gabim në marrjen e email-ve ekzistues:", error);
+    }
+};
+const checkEmailAvailability = () => {
+    if (existingEmails.value.includes(form.email)) {
+        emailError.value = "This email is already taken!";
+    } else {
+        emailError.value = "";
+    }
+};
 
-// Thirr funksionin kur komponenti montohet
-onMounted(fetchDepartments);
+onMounted(() => {
+    fetchDepartments();
+    fetchExistingEmails();
+});
 
 // Funksioni për të ruajtur një takim
 const submit = async () => {
+     if (emailError.value) {
+        message.value = "Please fix errors before submitting.";
+        success.value = false;
+        return;
+    }
     try {
         const response = await post('/api/appointments', form);
 
@@ -131,10 +157,12 @@ const submit = async () => {
                         </form>     
                 </div>
                 <div>   
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
-                    <input type="email" id="email" v-model="form.email" required="true"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
-                </div>
+    <label for="email" class="block text-sm font-medium text-gray-700">Email:</label>
+    <input type="email" id="email" v-model="form.email" required @blur="checkEmailAvailability"
+        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+    <p v-if="emailError" class="text-red-600 text-sm mt-1">{{ emailError }}</p>
+</div>
+
 
                 <div>
                         <form @submit.prevent="submit"  class="block text-sm font-medium text-gray-700">
