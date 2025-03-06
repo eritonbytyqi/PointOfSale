@@ -23,9 +23,11 @@ const isSunday = (dateString) => {
 
 // Funksioni për të fshirë datën nëse është e diel
 const handleDateChange = () => {
-    if (isSunday(form.value.date)) {
+    if (!form.date) return; // Kthehu nëse data është e zbrazët
+
+    if (isSunday(form.date)) {
         alert("E diel nuk lejohet! Zgjidh një ditë tjetër.");
-        form.value.date = "";
+        form.date = ""; // Reset the date if it's Sunday
     }
 };
 
@@ -57,7 +59,7 @@ const fetchAvailableTimes = async () => {
 
         console.log("API Response:", response.data); // Kontrollo të dhënat e marra nga API
 
-        const bookedTimes = Array.isArray(response.data.data) ? response.data.data : [];
+        const bookedTimes = response.data && Array.isArray(response.data.data) ? response.data.data : [];
         console.log("Oraret e zëna:", bookedTimes);
 
         availableTimes.value = allAvailableTimes.value.filter(time => !bookedTimes.includes(time));
@@ -86,6 +88,7 @@ const fetchDepartments = async () => {
 };
 
 onMounted(fetchDepartments);
+
 
 // Validimi për secilën fushë
 const errors = reactive({
@@ -139,7 +142,7 @@ const validateForm = () => {
     }
 
     if (!form.date) {
-        errors.date = "Data është e detyrueshëm!";
+        errors.date = "Data është e detyrueshme!";
         isValid = false;
     } else if (isSunday(form.date)) {
         errors.date = "E diel nuk lejohet! Zgjidh një ditë tjetër.";
@@ -175,33 +178,38 @@ const submit = async () => {
         success.value = false;
         return;
     }
-    if (validateForm()) {
-        try {
-            const response = await post('/api/appointments', form);
-            console.log("Response Data:", response.data);
 
-            if (!response || !response.data || !response.data.result) {
-                console.error("Gabim: Response ose result nuk ekziston!");
-                return;
-            }
+    try {
+        const response = await post('/api/appointments', form);
+    // if (response.data.errors && response.data.errors.personal_id) {
+    //         message.value = "Ky ID personal është përdorur tashmë!";
+    //         success.value = false;
+    //         return;
+    //     }
+     
+        console.log("Response Data:", response.data);
 
-            const appointmentId = response.data.result.id;
-            if (!appointmentId) {
-                console.error("Gabim: ID nuk u kthye nga API");
-                return;
-            }
-
-            message.value = "Appointment created successfully!";
-            success.value = true;
-
-            router.push({ path: "/payments/create", query: { appointment_id: appointmentId } });
-
-            console.log("Redirecting to payments/create with ID:", appointmentId);
-        } catch (error) {
-            message.value = "Error creating appointment. Please check all fields.";
-            success.value = false;
-            console.error("Gabim:", error);
+        if (!response || !response.data || !response.data.result) {
+            console.error("Gabim: Response ose result nuk ekziston!");
+            return;
         }
+
+        const appointmentId = response.data.result.id;
+        if (!appointmentId) {
+            console.error("Gabim: ID nuk u kthye nga API");
+            return;
+        }
+
+        message.value = "Appointment created successfully!";
+        success.value = true;
+
+        router.push({ path: "/payments/create", query: { appointment_id: appointmentId } });
+
+        console.log("Redirecting to payments/create with ID:", appointmentId);
+    } catch (error) {
+        message.value = "Error creating appointment. Please check all fields.";
+        success.value = false;
+        console.error("Gabim:", error);
     }
 };
 
@@ -225,7 +233,10 @@ const addPrefix = () => {
   }
 
 }
+
+
 </script>
+
 
 <template>
     <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
@@ -247,7 +258,6 @@ const addPrefix = () => {
                             {{ department.name }}
                         </option>
                     </select>
-                    <p v-if="errors.department_id" class="text-red-500 text-sm mt-1">{{ errors.department_id }}</p>
                 </div>
 
                 <div v-if="form.department_id" class="pl-4 border-l-4 border-blue-500">
@@ -259,62 +269,64 @@ const addPrefix = () => {
                             {{ doctor.name }} {{ doctor.surname }}
                         </option>
                     </select>
-                    <p v-if="errors.doctor_id" class="text-red-500 text-sm mt-1">{{ errors.doctor_id }}</p>
                 </div>
 
                 <InputText v-model="form.fullname" :required="true" label="Full Name"/>
                 <p v-if="errors.fullname" class="text-red-500 text-sm mt-1">{{ errors.fullname }}</p>
 
                 <InputText v-model="form.email" :required="true" label="Email" @blur="checkEmail" />
-                <p v-if="emailExists" class="text-red-500 text-sm mt-1">Ky email është përdorur tashmë!</p>
-                <p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
+<p v-if="emailExists" class="text-red-500 text-sm mt-1">Ky email është përdorur tashmë!</p>
+<p v-if="errors.email" class="text-red-500 text-sm mt-1">{{ errors.email }}</p>
 
-                <div>
-                    <label for="phoneNumber">Phone Number</label>
-                    <input 
-                        id="phoneNumber" 
-                        v-model="form.phoneNumber" 
-                        type="tel" 
-                        :required="true"
-                        @input="addPrefix"
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                    />
-                    <p v-if="errors.phoneNumber" class="text-red-500 text-sm mt-1">{{ errors.phoneNumber }}</p>
-                </div>
+<div>
+    <label for="phoneNumber">Phone Number</label>
+    <input 
+      id="phoneNumber" 
+      v-model="form.phoneNumber" 
+      type="tel" 
+      :required="true"
+      @input="addPrefix"
+      class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+    />
+  </div>    
+  <p v-if="errors.phoneNumber" class="text-red-500 text-sm mt-1">{{ errors.phoneNumber }}</p>
   
-                <InputText v-model="form.personal_id" :required="true" label="Personal ID"/>
-                <p v-if="errors.personal_id" class="text-red-500 text-sm mt-1">{{ errors.personal_id }}</p>
+  <InputText v-model="form.personal_id" :required="true" label="Personal ID"/>
+  <p v-if="errors.personal_id" class="text-red-500 text-sm mt-1">{{ errors.personal_id }}</p>
+  
 
                 <div>
                     <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                    <input 
-                        type="date" 
-                        id="date" 
-                        v-model="form.date" 
-                        :min="new Date().toISOString().split('T')[0]" 
-                        required
-                        class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                        @change="handleDateChange" 
-                    />
-                    <p v-if="errors.date" class="text-red-500 text-sm mt-1">{{ errors.date }}</p>
-                    <p v-if="isSunday(form.date)" class="text-red-500 text-sm mt-1">E diel nuk lejohet! Zgjidh një ditë tjetër.</p>
+<input 
+    type="date" 
+    id="date" 
+    v-model="form.date" 
+    :min="new Date().toISOString().split('T')[0]" 
+    required
+    class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+    @change="handleDateChange" 
+/>
+<p v-if="isSunday(form.date)" class="text-red-500 text-sm mt-1">
+    E diel nuk lejohet! Zgjidh një ditë tjetër.
+</p>
                 </div>
 
                 <div>
-                    <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
-                    <select v-model="form.time" required
+                    <label for="time" class="block text-sm font-medium text-gray-700">Time:</label>
+                    <select id="time" v-model="form.time" required
                         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option v-for="time in availableTimes" :key="time" :value="time">{{ time }}</option>
+                        <option value="" disabled>Select a time</option>
+                        <option v-for="time in availableTimes" :key="time" :value="time">
+                            {{ time }}
+                        </option>
                     </select>
-                    <p v-if="errors.time" class="text-red-500 text-sm mt-1">{{ errors.time }}</p>
                 </div>
 
-                <div class="flex justify-center">
-                    <button type="submit" class="mt-6 py-2 px-4 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600">
-                        Create Appointment
-                    </button>
-                </div>
-            </form>
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md shadow-md">
+                    Save
+                </button>
+            </form> 
         </div>
     </div>
 </template>
