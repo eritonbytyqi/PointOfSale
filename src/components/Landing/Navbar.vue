@@ -3,7 +3,7 @@
     <div class="container mx-auto flex justify-between items-center">
       <!-- Logo + Text -->
       <div class="flex items-center space-x-2">
-        <img src="@/assets/logo/quick.png" alt="QuickMed Logo" class="w-11 h-11"> <!-- Rritur këtu -->
+        <img src="@/assets/logo/quickkk.png" alt="QuickMed Logo" class="w-11 h-11"> <!-- Rritur këtu -->
         <span class="text-white font-bold text-lg">QuickMed</span>
       </div>
 
