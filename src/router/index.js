@@ -1,4 +1,5 @@
  import { createRouter, createWebHistory } from 'vue-router'
+ import LandingPage from '../views/LandingPage.vue'
 import HomeView from '../views/HomeView.vue'
 import CreateAppointment from "@/views/Appointments/Create.vue"
 import AppLayout from "@/views/Layout/AppLayout.vue"  
@@ -20,13 +21,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      redirect: '/landing' 
     },
     {
-      path: '/about',
-      name: 'about',
-      component: () => import('../views/AboutView.vue'),
+      path: '/landing',
+      name: 'landing',
+      component: LandingPage,
     },
     {
       path: '',
