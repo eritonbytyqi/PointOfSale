@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getDoctors } from "@/services/doctors.js"; // Merr listën e doktorëve
+import { getDoctors, getDoctorss } from "@/services/doctors.js"; // Merr listën e doktorëve
 import { addDoctorToDepartment } from "@/services/departments.js"; // Metoda për të shtuar doktorin
 import Spinner from "@/components/Spinner.vue";
 
@@ -20,17 +20,28 @@ const showSpinner = ref(false);
 // 🔹 Merr listën e doktorëve kur hapet faqja
 onMounted(() => {
   showSpinner.value = true;
-  getDoctors()
-    .then((response) => {
-      doctors.value = response.result.data;
-    })
-    .catch((error) => {
-      console.error("Error fetching doctors:", error);
-    })
-    .finally(() => {
-      showSpinner.value = false;
-    });
-});
+  showSpinner.value = true; // Fillon loading
+
+getDoctorss(departmentId)
+  .then((response) => {
+    console.log("API Response:", response); // Kontrollo përgjigjen e API
+
+    if (response.data && Array.isArray(response.data.data)) {
+      doctors.value = response.data.data;
+      console.log("Doktorët e marrë:", doctors.value);
+    } else {
+      console.error("Struktura e përgjigjes nuk është e pritur:", response);
+      doctors.value = []; 
+    }
+  })
+  .catch((error) => {
+    console.error("Gabim në marrjen e doktorëve:", error);
+    doctors.value = [];
+  })
+  .finally(() => {
+    showSpinner.value = false; // 🚀 Sigurohemi që spinner ndalet gjithmonë
+  });
+})
 
 //  Shto doktorin në departament
 const addDoctor = async () => {
@@ -41,7 +52,7 @@ const addDoctor = async () => {
   }
 
   showSpinner.value = true;
-  try {
+  try { 
     await addDoctorToDepartment(departmentId, selectedDoctor.value);
     message.value = "Doctor added successfully!";
     success.value = true;

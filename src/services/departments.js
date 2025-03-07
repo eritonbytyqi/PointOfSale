@@ -87,12 +87,12 @@ export async function addDoctorToDepartment(departmentId, doctorId) {
 
 export const deleteDoctorFromDepartment = async (departmentId, doctorId) => {
     try {
-      const response = await axios.delete(`/api/departments/${departmentId}/delete-doctor`,
-      {doctor_id: doctorId}
-      );
+      // Kërkesa DELETE ku doctorId është pjesë e URL-së
+      const response = await axios.delete(`http://127.0.0.1:8000/api/departments/${departmentId}/delete-doctor/${doctorId}`);
       return response.data;
     } catch (error) {
       console.error("Error deleting doctor:", error);
       throw error; // Sigurohuni që të dergoni gabimin në front-end
     }
   };
+  
