@@ -1,6 +1,7 @@
 import {destroy, get, patch, post} from "@/composable/useApi.js";
 export async function getDoctors(pageQuery = '', filters = {}) {
     try {
+
         return await get('api/doctors' + pageQuery, {params: filters}).then(res =>{
             if(res.status === 200){
                     return res.data;
@@ -12,6 +13,9 @@ export async function getDoctors(pageQuery = '', filters = {}) {
         return null;
     }
 }
+export const getDoctorss = (departmentId) => {
+    return get(`/api/departments/${departmentId}/doctors`);
+  }
 export async function showDoctor(id) {
     try {
         console.log("Doctor ID:", id); // Kontrollo ID-në

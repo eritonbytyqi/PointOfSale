@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getDoctors } from "@/services/doctors.js";
+import { getDoctorss} from "@/services/doctors.js";
 import { deleteDoctorFromDepartment } from "@/services/departments.js";
 import Spinner from "@/components/Spinner.vue";
 
@@ -15,45 +15,70 @@ const message = ref("");
 const success = ref(false);
 const showSpinner = ref(false);
 
-// 🔹 Merr listën e doktorëve për departamentin kur hapet faqja
+// 🔹 Merr listën e doktorëve vetëm për këtë departament
 onMounted(() => {
   showSpinner.value = true;
-  getDoctors()
-    .then((response) => {
-      doctors.value = response.result.data;
-    })
-    .catch((error) => {
-      console.error("Error fetching doctors:", error);
-    })
-    .finally(() => {
-      showSpinner.value = false;
-    });
+  showSpinner.value = true; // Fillon loading
+
+getDoctorss(departmentId)
+  .then((response) => {
+    console.log("API Response:", response); // Kontrollo përgjigjen e API
+
+    if (response.data && Array.isArray(response.data.data)) {
+      doctors.value = response.data.data;
+      console.log("Doktorët e marrë:", doctors.value);
+    } else {
+      console.error("Struktura e përgjigjes nuk është e pritur:", response);
+      doctors.value = []; 
+    }
+  })
+  .catch((error) => {
+    console.error("Gabim në marrjen e doktorëve:", error);
+    doctors.value = [];
+  })
+  .finally(() => {
+    showSpinner.value = false; // 🚀 Sigurohemi që spinner ndalet gjithmonë
+  });
+
+
 });
 
-//  Fshij doktorin nga departamenti
+// 🔹 Fshij doktorin nga departamenti
 const deleteDoctor = async () => {
   if (!selectedDoctor.value) {
-    message.value = "Please select a doctor to remove.";
+    message.value = "Ju lutem zgjidhni një doktor për të hequr.";
     success.value = false;
     return;
   }
 
-
   showSpinner.value = true;
   try {
     await deleteDoctorFromDepartment(departmentId, selectedDoctor.value);
-    message.value = "Doctor removed successfully!";
+    message.value = "Doktori u hoq me sukses!";
     success.value = true;
     router.push({ name: "departments" }); // Kthehu te lista e departamenteve
-  } catch (error) {
-    message.value = "Failed to remove doctor.";
-    success.value = false;
-    console.error("Error:", error);
-  } finally {
+} catch (error) {
     showSpinner.value = false;
-  }
+    
+    // Kontrollo nëse gabimi është 404
+    if (error.response && error.response.status === 404) {
+        message.value = "Doktori nuk u gjet ose ka ndodhur një gabim gjatë fshirjes.";
+    } else {
+        // Për çdo gabim tjetër, tregoni mesazhin e përgjithshëm të gabimit
+        message.value = `Gabim gjatë fshirjes së doktorit: ${error.message}`;
+    }
+    
+    success.value = false;
+    console.error("Gabim:", error);
+} finally {
+    showSpinner.value = false;
+}
+
+
 };
 </script>
+
+
 
 <template>
   <Spinner v-if="showSpinner"/>
