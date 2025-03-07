@@ -1,16 +1,21 @@
 <template>
-    <nav class="bg-blue-600 p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <div class="text-white font-bold text-lg">QuickMed</div>
-        <div class="space-x-4">
-          <a href="#home" class="text-white">Home</a>
-          <a href="#about" class="text-white">About</a>
-          <a href="#departments" class="text-white">Departments</a>
-          <a href="#doctors" class="text-white">Doctors</a>
-          <a href="#contactus" class="text-white">Contact Us</a>
-
-        </div>
+  <nav class="bg-gradient-to-r from-blue-600/60 to-blue-400/50 p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <!-- Logo + Text -->
+      <div class="flex items-center space-x-2">
+        <img src="@/assets/logo/quick.png" alt="QuickMed Logo" class="w-11 h-11"> <!-- Rritur këtu -->
+        <span class="text-white font-bold text-lg">QuickMed</span>
       </div>
-    </nav>
-  </template>
-  
+
+      <!-- Navbar Links -->
+      <div class="space-x-4">
+        <a href="#home" class="text-white hover:text-gray-200 transition">Home</a>
+        <a href="#about" class="text-white hover:text-gray-200 transition">About</a>
+        <a href="#departments" class="text-white hover:text-gray-200 transition">Departments</a>
+        <a href="#blog" class="text-white hover:text-gray-200 transition">Blog</a>
+        <a href="#doctors" class="text-white hover:text-gray-200 transition">Doctors</a>
+        <a href="#contactus" class="text-white hover:text-gray-200 transition">Contact Us</a>
+      </div>
+    </div>
+  </nav>
+</template>
