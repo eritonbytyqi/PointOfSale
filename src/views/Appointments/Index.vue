@@ -1,10 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAppointments,getAppointmentsConfirmed, updateAppointmentStatus } from '@/services/appointments.js';
+
+import { getAppointments, updateAppointmentStatus } from '@/services/appointments.js';
+import Spinner from "@/components/Spinner.vue";
 
 const appointments = ref([]);
 const searchQuery = ref("");
+const showSpinner = ref(false);
 const selectedAction = ref(null);
 const showModal = ref(false);
 const selectedAppointment = ref(null);
@@ -12,23 +15,32 @@ const router = useRouter();
 
 // Merr terminet nga API dhe cakto statusin nga localStorage
 onMounted(() => {
-  getAppointments().then((data) => {
-    appointments.value = data?.result?.data?.map(appt => ({
-      ...appt,
-      status: localStorage.getItem(`appointment-${appt.id}`) || "pending"
-    })) || [];
-  });
-});
-
-  getAppointmentsConfirmed()
+  showSpinner.value = true;
+  getAppointments()
     .then((data) => {
-      console.log("Terminet e konfirmuara:", data); 
-      appointments.value = data;
+      appointments.value = data?.result?.data?.map(appt => ({
+        ...appt,
+        status: localStorage.getItem(`appointment-${appt.id}`) || "pending"
+      })) || [];
     })
     .catch((error) => {
-      console.error('Error fetching doctors:', error);
+      console.error('Error fetching appointments:', error);
     })
+    .finally(() => {
+      showSpinner.value = false;
+    });
+});
+
+  // getAppointmentsConfirmed()
+  //   .then((data) => {
+  //     console.log("Terminet e konfirmuara:", data); 
+  //     appointments.value = data;
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error fetching doctors:', error);
+  //   })
     
+
 // Funksioni për të ndryshuar statusin e një termini
 const changeStatus = async (appointment, status) => {
   try {
@@ -81,6 +93,7 @@ const modalText = computed(() => {
 </script>
 
 <template>
+  <Spinner v-if="showSpinner" />
   <div class="p-6 bg-gray-50 min-h-screen">
     <h1 class="text-4xl text-center text-blue-600 mb-8">Appointments Dashboard</h1>
     
