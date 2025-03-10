@@ -57,6 +57,11 @@ const router = createRouter({
           component: Payment,
         },
         {
+          path: "/appointments/confirmed",
+          name: "appointments.confirmed",
+          component: Appointments,
+        },
+        {
           path: '/doctors',
           name: 'doctors',
           component: Doctors,
