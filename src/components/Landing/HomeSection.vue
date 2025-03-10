@@ -15,7 +15,7 @@ import doctorhome from '@/assets/home/doctorhome.jpg';
       <p class="text-lg mt-4 max-w-3xl text-white/90 leading-relaxed">
         Your trusted platform for booking medical appointments, managing doctors, and more.      </p>
       <router-link 
-        to="/appointments/create" 
+        to="landing/BookAppointment" 
         class="mt-6 inline-block bg-white text-blue-600 px-8 py-4 rounded-lg shadow-lg hover:bg-gray-200 transition">
         Book Appointment
       </router-link>

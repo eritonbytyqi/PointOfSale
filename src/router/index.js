@@ -14,6 +14,8 @@ import CreateDepartment from "@/views/Departments/Create.vue"
 import AddDoctor from '@/views/Doctors/AddDoctor.vue'
 import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
 import CreatePayment from '@/views/Payments/Create.vue'
+import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
+import PaymentSection from '@/components/Landing/PaymentSection.vue'
 
 
 const router = createRouter({
@@ -27,6 +29,16 @@ const router = createRouter({
       path: '/landing',
       name: 'landing',
       component: LandingPage,
+    },
+    {
+      path: '/landing/BookAppointment',
+      name: 'bookAppointmentLanding',
+      component: BookAppointment,
+    },
+    {
+      path: '/landing/Payment',
+      name: 'paymentLanding',
+      component: PaymentSection,
     },
     {
       path: '',
