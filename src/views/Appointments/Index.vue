@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAppointments, updateAppointmentStatus } from '@/services/appointments.js';
+import { getAppointments,getAppointmentsConfirmed, updateAppointmentStatus } from '@/services/appointments.js';
 
 const appointments = ref([]);
 const searchQuery = ref("");
@@ -20,6 +20,15 @@ onMounted(() => {
   });
 });
 
+  getAppointmentsConfirmed()
+    .then((data) => {
+      console.log("Terminet e konfirmuara:", data); 
+      appointments.value = data;
+    })
+    .catch((error) => {
+      console.error('Error fetching doctors:', error);
+    })
+    
 // Funksioni për të ndryshuar statusin e një termini
 const changeStatus = async (appointment, status) => {
   try {
@@ -64,6 +73,11 @@ const modalText = computed(() => {
   }
   return "";
 });
+
+
+// Thirret automatikisht kur ngarkohet komponenti
+
+
 </script>
 
 <template>
@@ -73,7 +87,8 @@ const modalText = computed(() => {
     <div class="flex justify-between mb-4">
   <input v-model="searchQuery" type="text" placeholder="Search by name" 
          class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-500 w-64">
-  <button 
+     
+         <button 
     @click="router.push('/appointments/create')"
     class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
     Add Appointment
