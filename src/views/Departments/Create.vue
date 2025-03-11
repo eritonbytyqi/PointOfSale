@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { ref, reactive } from "vue";
 import { post } from "@/composable/useApi.js";
 
@@ -15,6 +15,53 @@ const submit = async () => {
         message.value = "Department created successfully!";
         success.value = true;
         console.log(response.data);
+    } catch (error) {
+        message.value = "Error creating department. Please check all fields.";
+        success.value = false;
+        console.error("Error:", error);
+    }
+};
+</script> -->
+<script setup>
+import { ref, reactive } from "vue";
+import { post, get } from "@/composable/useApi.js";
+
+const form = reactive({
+    name: "",  // Emri i departamentit
+});
+
+const message = ref("");
+const success = ref(false);
+
+const submit = async () => {
+    try {
+        // Kontrolloni ekzistimin e departamenteve të tjera
+        const existingDepartmentsResponse = await get('/api/departments');
+        console.log("Existing Departments Response:", existingDepartmentsResponse);
+
+        // Sigurohuni që përgjigja ka të dhëna të sakta
+        if (!existingDepartmentsResponse || !existingDepartmentsResponse.data || !Array.isArray(existingDepartmentsResponse.data.result.data)) {
+            throw new Error("Invalid API response structure");
+        }
+
+        const existingDepartments = existingDepartmentsResponse.data.result.data;
+
+        // Kontrolloni nëse departamenti tashmë ekziston
+        const departmentExists = existingDepartments.some(department => 
+            department.name.toLowerCase() === form.name.toLowerCase()
+        );
+
+        if (departmentExists) {
+            message.value = "Department already exists!";
+            success.value = false;
+            return; // Mos e dërgo kërkesën nëse departamenti ekziston
+        }
+
+        // Nëse nuk ekziston, krijo departamentin
+        await post('/api/departments', form);
+        message.value = "Department created successfully!";
+        success.value = true;
+
     } catch (error) {
         message.value = "Error creating department. Please check all fields.";
         success.value = false;

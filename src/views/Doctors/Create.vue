@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive } from "vue";
-import { post } from "@/composable/useApi.js";
+import { post, get } from "@/composable/useApi.js";
 
 const form = reactive({
     name: "",
@@ -14,10 +14,33 @@ const success = ref(false);
 
 const submit = async () => {
     try {
-        const response = await post('/api/doctors', form);
+        // 🔹 Kontrollo nëse API përgjigja ka të dhëna të sakta
+        const existingDoctorsResponse = await get('/api/doctors');
+        console.log("Existing Doctors Response:", existingDoctorsResponse);
+
+        if (!existingDoctorsResponse || !existingDoctorsResponse.data ||!Array.isArray(existingDoctorsResponse.data.result.data)) {
+            throw new Error("Invalid API response structure");
+        }
+
+        const existingDoctors = existingDoctorsResponse.data.result.data;
+
+        // Kontrollo nëse doktori tashmë ekziston
+        const doctorExists = existingDoctors.some(doctor => 
+            doctor.name.toLowerCase() === form.name.toLowerCase() &&
+            doctor.surname.toLowerCase() === form.surname.toLowerCase()
+        );
+
+        if (doctorExists) {
+            message.value = "Doctor already exists!";
+            success.value = false;
+            return; // Mos e dërgo kërkesën nëse doktori ekziston
+        }
+        
+        // Nëse nuk ekziston, krijo doktorin
+        await post('/api/doctors', form);
         message.value = "Doctor created successfully!";
         success.value = true;
-        
+
     } catch (error) {
         message.value = "Error creating doctor. Please check all fields.";
         success.value = false;
@@ -25,6 +48,7 @@ const submit = async () => {
     }
 };
 </script>
+
 
 <template>
     <div class="py-10 min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg flex justify-center items-center">

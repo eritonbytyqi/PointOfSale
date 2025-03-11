@@ -18,7 +18,7 @@ onMounted(() => {
   showSpinner.value = true;
   getAppointments()
     .then((data) => {
-      appointments.value = data?.result?.data?.map(appt => ({
+      appointments.value = data?.result?.data?.filter(appt => appt.status !== "completed").map(appt => ({
         ...appt,
         status: localStorage.getItem(`appointment-${appt.id}`) || "pending"
       })) || [];

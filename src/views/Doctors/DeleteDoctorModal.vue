@@ -26,18 +26,18 @@ getDoctorss(departmentId)
 
     if (response.data && Array.isArray(response.data.data)) {
       doctors.value = response.data.data;
-      console.log("Doktorët e marrë:", doctors.value);
+      console.log("Doctors:", doctors.value);
     } else {
-      console.error("Struktura e përgjigjes nuk është e pritur:", response);
+      console.error("The response structure is not expected:", response);
       doctors.value = []; 
     }
   })
   .catch((error) => {
-    console.error("Gabim në marrjen e doktorëve:", error);
+    console.error("Error fetching doctors:", error);
     doctors.value = [];
   })
   .finally(() => {
-    showSpinner.value = false; // 🚀 Sigurohemi që spinner ndalet gjithmonë
+    showSpinner.value = false; //  Sigurohemi që spinner ndalet gjithmonë
   });
 
 
@@ -46,7 +46,7 @@ getDoctorss(departmentId)
 // 🔹 Fshij doktorin nga departamenti
 const deleteDoctor = async () => {
   if (!selectedDoctor.value) {
-    message.value = "Ju lutem zgjidhni një doktor për të hequr.";
+    message.value = "Please select a doctor.";
     success.value = false;
     return;
   }
@@ -54,7 +54,7 @@ const deleteDoctor = async () => {
   showSpinner.value = true;
   try {
     await deleteDoctorFromDepartment(departmentId, selectedDoctor.value);
-    message.value = "Doktori u hoq me sukses!";
+    message.value = "Doctor removed successfully!";
     success.value = true;
     router.push({ name: "departments" }); // Kthehu te lista e departamenteve
 } catch (error) {
@@ -62,14 +62,14 @@ const deleteDoctor = async () => {
     
     // Kontrollo nëse gabimi është 404
     if (error.response && error.response.status === 404) {
-        message.value = "Doktori nuk u gjet ose ka ndodhur një gabim gjatë fshirjes.";
+        message.value = "Doctor not found or something wrong happened.";
     } else {
         // Për çdo gabim tjetër, tregoni mesazhin e përgjithshëm të gabimit
-        message.value = `Gabim gjatë fshirjes së doktorit: ${error.message}`;
+        message.value = `Failed to remove doctor: ${error.message}`;
     }
     
     success.value = false;
-    console.error("Gabim:", error);
+    console.error("Error:", error);
 } finally {
     showSpinner.value = false;
 }

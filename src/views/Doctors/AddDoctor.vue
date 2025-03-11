@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getDoctors } from "@/services/doctors.js"; // Merr listën e doktorëve
-import { addDoctorToDepartment } from "@/services/departments.js"; // Metoda për të shtuar doktorin
+import { getDoctors, getDoctorss } from "@/services/doctors.js";
+import { addDoctorToDepartment } from "@/services/departments.js";
 import Spinner from "@/components/Spinner.vue";
 
 
@@ -17,20 +17,40 @@ const message = ref("");
 const success = ref(false);
 const showSpinner = ref(false);
 
-// 🔹 Merr listën e doktorëve kur hapet faqja
 onMounted(() => {
   showSpinner.value = true;
-  getDoctors()
-    .then((response) => {
-      doctors.value = response.result.data;
+  let departmentDoctors = []; // Definojmë variablën këtu që të jetë e qasshme në të gjitha .then()
+
+  getDoctorss(departmentId)
+    .then((departmentResponse) => {
+      if (departmentResponse.data && Array.isArray(departmentResponse.data.data)) {
+        departmentDoctors = departmentResponse.data.data.map(doc => doc.id); // Ruajmë ID-të e doktorëve në departament
+        return getDoctors(); // Kthejmë premtimin për listën e doktorëve
+      } else {
+        console.error("The response structure is not expected:", departmentResponse);
+        throw new Error("Invalid response structure");
+      }
+    })
+    .then((allDoctorsResponse) => {
+      if (allDoctorsResponse.result && Array.isArray(allDoctorsResponse.result.data)) {
+        const allDoctors = allDoctorsResponse.result.data;
+
+        // Filtro vetëm doktorët që NUK janë në këtë departament
+        doctors.value = allDoctors.filter(doc => !departmentDoctors.includes(doc.id)); 
+      } else {
+        console.error("The response structure is not expected:", allDoctorsResponse);
+        doctors.value = [];
+      }
     })
     .catch((error) => {
       console.error("Error fetching doctors:", error);
+      doctors.value = [];
     })
     .finally(() => {
       showSpinner.value = false;
     });
 });
+
 
 //  Shto doktorin në departament
 const addDoctor = async () => {
@@ -45,8 +65,9 @@ const addDoctor = async () => {
     await addDoctorToDepartment(departmentId, selectedDoctor.value);
     message.value = "Doctor added successfully!";
     success.value = true;
-    router.push({ name: "addDoctor" }); 
+    router.push({ name: "departments" }); 
   } catch (error) {
+    showSpinner.value = false;
     message.value = "Failed to add doctor.";
     success.value = false;
     console.error("Error:", error);
