@@ -40,13 +40,13 @@ onMounted(() => {
   <Spinner v-if="showSpinner"/>
   <DeleteModal v-if="showDeleteModal" :doctorId="selectedDoctorId" @closeDeleteModal="closeDeleteModal" />
 
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Doctor Dashboard</h1>
+  <div className="p-6 bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg min-h-screen">
+    <h1 class="text-4xl font-bold text-center text-black-600 mb-8">Doctor Dashboard</h1>
 
     <div class="text-right mb-6">
       <button 
         @click="navigateToCreateDoctor"
-        class="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300">
+        class="px-6 py-3 bg-gray-700 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-300">
         Add Doctor
       </button>
     </div>

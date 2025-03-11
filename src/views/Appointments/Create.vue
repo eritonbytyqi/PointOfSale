@@ -84,7 +84,7 @@ const submit = async () => {
 </script>
 
 <template>
-    <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
+    <div class="py-10 min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg flex justify-center items-center">
         <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
             <h1 class="text-2xl font-semibold text-gray-800 mb-6">Create Appointment</h1>
             <form @submit.prevent="submit" class="space-y-4">
@@ -131,10 +131,10 @@ const submit = async () => {
     </div>
     <div v-if="showMessage" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 class="text-xl font-semibold text-center mb-4">Faleminderit për termin tuaj!</h2>
-            <p class="text-center text-gray-600">Ju lutem prisni konfirmimin tonë në emailin tuaj.</p>
+            <h2 class="text-xl font-semibold text-center mb-4">Thank you for your appointment!</h2>
+            <p class="text-center text-gray-600">Please wait for our confirmation in your email.</p>
             <div class="flex justify-center mt-6">
-                <button @click="closeModal" class="bg-blue-600 text-white py-2 px-4 rounded-md">Mbyll</button>
+                <button @click="closeModal" class="bg-blue-600 text-white py-2 px-4 rounded-md">Close</button>
             </div>
         </div>
     </div>

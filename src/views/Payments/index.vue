@@ -43,8 +43,8 @@ onMounted(() => {
   <Spinner v-if="showSpinner" />
   <DeleteModal v-if="showDeleteModal" @closeDeleteModal="closeDeleteModal" />
 
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-4xl font-bold text-center text-blue-600 mb-8">Payments Dashboard</h1>
+  <div class="p-6 bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg min-h-screen">
+    <h1 class="text-4xl font-bold text-center text-black-600 mb-8">Payments Dashboard</h1>
 
    
     <div class="mb-4">

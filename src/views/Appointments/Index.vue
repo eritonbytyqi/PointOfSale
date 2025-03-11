@@ -99,8 +99,8 @@ const buttonTexxt = (appointment) => {
 
 <template>
   <Spinner v-if="showSpinner" />
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-4xl text-center text-blue-600 mb-8">Appointments Dashboard</h1>
+  <div class="p-6 bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg min-h-screen">
+    <h1 class="text-4xl font-bold text-center text-black-600 mb-8">Appointments Dashboard</h1>
     
     <div class="flex justify-between mb-4">
   <input v-model="searchQuery" type="text" placeholder="Search by name" 
@@ -108,7 +108,7 @@ const buttonTexxt = (appointment) => {
      
          <button 
     @click="router.push('/appointments/create')"
-    class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
+    class="px-4 py-2 bg-gray-700 text-white rounded-lg shadow-md transition-all duration-200 ease-in-out ml-4">
     Add Appointment
   </button>
 </div>
@@ -133,8 +133,8 @@ const buttonTexxt = (appointment) => {
           <tr v-for="appointment in appointments.filter(appt => appt.fullname.toLowerCase().includes(searchQuery.toLowerCase()))" 
               :key="appointment.id"
               :class="{
-                'bg-red-200': appointment.status === 'canceled',
-                'bg-orange-200': appointment.status === 'confirmed'
+                'bg-red-100': appointment.status === 'canceled',
+                'bg-orange-100': appointment.status === 'confirmed'
               }">
             <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
@@ -147,12 +147,12 @@ const buttonTexxt = (appointment) => {
             <td class="px-3 py-2 flex flex-col space-y-1">
               <button @click="openModal(appointment, 'confirmed')" 
                       :disabled="appointment.status === 'confirmed'" 
-                      class="px-2 py-1 bg-orange-500 text-white rounded">
+                      class="px-2 py-1 bg-orange-400 text-white rounded">
                 {{ buttonText(appointment) }}
             </button>
                 <button @click="openModal(appointment, 'canceled')" 
                       :disabled="appointment.status === 'canceled'" 
-                      class="px-2 py-1 bg-red-500 text-white rounded">
+                      class="px-2 py-1 bg-red-400 text-white rounded">
                 {{ buttonTexxt(appointment) }}
             </button>
 
@@ -167,7 +167,7 @@ const buttonTexxt = (appointment) => {
         <p class="text-lg mb-4">{{ modalText }}</p>
         <div class="flex justify-center space-x-2">
           <button @click="showModal = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-          <button @click="confirmAction" class="px-4 py-2 bg-blue-500 text-white rounded">Confirm</button>
+          <button @click="confirmAction" class="px-4 py-2 bg-red-500 text-white rounded">Confirm</button>
         </div>
       </div>
     </div>

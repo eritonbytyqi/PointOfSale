@@ -1,11 +1,11 @@
 <template>
   <!-- Main container -->
-  <div class="flex">
+  <div class="flex min-h-screen bg-gradient-to-r from-blue-100 to-blue-100">
     <!-- Sidebar -->
-    <Sidebar />
+    <Sidebar class="fixed w-64 h-screen" />
 
     <!-- Main content area -->
-    <div class="flex-1 p-4">
+    <div class="flex-1 p-4 ml-64">
       <!-- Topbar with Profile -->
       <Navbar />
 
@@ -16,6 +16,8 @@
     </div>
   </div>
 </template>
+
+
 
 <script>
 import Sidebar from './Sidebar.vue';  // Import Sidebar component
