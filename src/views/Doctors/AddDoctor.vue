@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getDoctors, getDoctorss } from "@/services/doctors.js"; // Merr listën e doktorëve
+import { getDoctors } from "@/services/doctors.js"; // Merr listën e doktorëve
 import { addDoctorToDepartment } from "@/services/departments.js"; // Metoda për të shtuar doktorin
 import Spinner from "@/components/Spinner.vue";
 
@@ -20,21 +20,17 @@ const showSpinner = ref(false);
 // 🔹 Merr listën e doktorëve kur hapet faqja
 onMounted(() => {
   showSpinner.value = true;
-  showSpinner.value = true; // Fillon loading
-
-getDoctors(departmentId)
-.then(() => {
-      alert('Doctor deleted successfully');
-      emit('closeDeleteModal');
+  getDoctors()
+    .then((response) => {
+      doctors.value = response.result.data;
     })
-  .catch((error) => {
-    console.error("Gabim në marrjen e doktorëve:", error);
-    doctors.value = [];
-  })
-  .finally(() => {
-    showSpinner.value = false; // 🚀 Sigurohemi që spinner ndalet gjithmonë
-  });
-})
+    .catch((error) => {
+      console.error("Error fetching doctors:", error);
+    })
+    .finally(() => {
+      showSpinner.value = false;
+    });
+});
 
 //  Shto doktorin në departament
 const addDoctor = async () => {
@@ -45,7 +41,7 @@ const addDoctor = async () => {
   }
 
   showSpinner.value = true;
-  try { 
+  try {
     await addDoctorToDepartment(departmentId, selectedDoctor.value);
     message.value = "Doctor added successfully!";
     success.value = true;
@@ -62,7 +58,7 @@ const addDoctor = async () => {
 
 <template>
   <Spinner v-if="showSpinner"/>
-  <div class="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg">
+  <div class="min-h-screen flex justify-center items-center bg-gray-100">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h1 class="text-2xl font-semibold text-gray-800 mb-6">Add Doctor to Department</h1>
 
