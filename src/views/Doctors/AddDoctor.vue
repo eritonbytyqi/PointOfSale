@@ -62,7 +62,7 @@ const addDoctor = async () => {
 
 <template>
   <Spinner v-if="showSpinner"/>
-  <div class="min-h-screen flex justify-center items-center bg-gray-100">
+  <div class="min-h-screen flex justify-center items-center bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
       <h1 class="text-2xl font-semibold text-gray-800 mb-6">Add Doctor to Department</h1>
 

@@ -58,7 +58,7 @@ onMounted(() => {
 
 <template>
   <Spinner v-if="showSpinner"/>
-  <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
+  <div class="py-10 min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg flex justify-center items-center">
     <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
       <h1 class="text-2xl font-semibold text-gray-800 mb-6">Edit Department</h1>
 
