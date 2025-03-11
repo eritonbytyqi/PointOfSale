@@ -1,10 +1,10 @@
-<template>
+<template>  
   <div>
     <Navbar />
     <HomeSection />
     <AboutSection />
     <DepartmentsSection />
-    <BookAppointmentSection />
+    <!-- <BookAppointmentSection /> -->
     
     <!-- Shfaqja e mesazhit të suksesit -->
     <div v-if="$route.query.appointmentSuccess" class="alert alert-success">
@@ -23,7 +23,7 @@ import Navbar from "@/components/Landing/Navbar.vue";
 import HomeSection from "@/components/Landing/HomeSection.vue";
 import AboutSection from "@/components/Landing/AboutSection.vue";
 import DepartmentsSection from "@/components/Landing/DepartmentsSection.vue";
-import BookAppointmentSection from "@/components/Landing/BookAppointmentSection.vue";
+// import BookAppointmentSection from "@/components/Landing/BookAppointmentSection.vue";
 import BlogSection from "@/components/Landing/BlogSection.vue";
 import DoctorsSection from "@/components/Landing/DoctorsSection.vue";
 import ContactSection from "@/components/Landing/ContactSection.vue";
@@ -35,7 +35,7 @@ export default {
     HomeSection,
     AboutSection,
     DepartmentsSection,
-    BookAppointmentSection,
+    // BookAppointmentSection,
     BlogSection,
     DoctorsSection,
     ContactSection,

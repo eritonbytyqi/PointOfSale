@@ -24,7 +24,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/landing' 
+      redirect: '/landing'   
     },
     {
       path: '/landing',
