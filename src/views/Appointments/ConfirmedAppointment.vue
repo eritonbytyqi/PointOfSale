@@ -1,8 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-
-import { getAppointments, getAppointmentsConfirmed,updateAppointmentStatus } from '@/services/appointments.js';
+import { getAppointmentsConfirmed, updateAppointmentStatus } from '@/services/appointments.js';
 import Spinner from "@/components/Spinner.vue";
 
 const appointments = ref([]);
@@ -16,7 +15,7 @@ const router = useRouter();
 // Merr terminet nga API dhe cakto statusin nga localStorage
 onMounted(() => {
   showSpinner.value = true;
-  getAppointments()
+  getAppointmentsConfirmed()
     .then((data) => {
       appointments.value = data?.result?.data?.map(appt => ({
         ...appt,
@@ -30,16 +29,6 @@ onMounted(() => {
       showSpinner.value = false;
     });
 });
-
-  getAppointmentsConfirmed()
-    .then((data) => {
-      console.log("Terminet e konfirmuara:", data); 
-      appointments.value = data;
-    })
-    .catch((error) => {
-      console.error('Error fetching doctors:', error);
-    })
-    
 
 // Funksioni për të ndryshuar statusin e një termini
 const changeStatus = async (appointment, status) => {
@@ -73,9 +62,7 @@ const openModal = (appointment, action) => {
 };
 
 const actionTexts = {
-  confirmed: "confirm",
   completed: "complete",
-  canceled: "cancel"
 };
 
 // Teksti i modalit
@@ -86,33 +73,21 @@ const modalText = computed(() => {
   return "";
 });
 
+// Kontrollo tekstin e butonit
 const buttonText = (appointment) => {
-  return appointment.status === 'confirmed' ? 'confirmed' : 'confirm';
+  return appointment.status === 'completed' ? 'Completed' : 'Complete';
 };
-const buttonTexxt = (appointment) => {
-  return appointment.status === 'canceled' ? 'canceled' : 'cancel';
-};
-// Thirret automatikisht kur ngarkohet komponenti
-
-
 </script>
 
 <template>
   <Spinner v-if="showSpinner" />
   <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-4xl text-center text-blue-600 mb-8">Appointments Dashboard</h1>
+    <h1 class="text-4xl text-center text-blue-600 mb-8">ConfirmedAppointments Dashboard</h1>
     
     <div class="flex justify-between mb-4">
-  <input v-model="searchQuery" type="text" placeholder="Search by name" 
-         class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-500 w-64">
-     
-         <button 
-    @click="router.push('/appointments/create')"
-    class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition-all duration-200 ease-in-out ml-4">
-    Add Appointment
-  </button>
-</div>
-
+      <input v-model="searchQuery" type="text" placeholder="Search by name" 
+             class="p-2 border rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-500 w-64">
+    </div>
     
     <div class="overflow-x-auto bg-white shadow-lg rounded-lg">
       <table class="min-w-full table-auto">
@@ -133,8 +108,9 @@ const buttonTexxt = (appointment) => {
           <tr v-for="appointment in appointments.filter(appt => appt.fullname.toLowerCase().includes(searchQuery.toLowerCase()))" 
               :key="appointment.id"
               :class="{
-                'bg-red-200': appointment.status === 'canceled',
-                'bg-orange-200': appointment.status === 'confirmed'
+                'bg-green-200': appointment.status === 'completed',
+                // 'bg-red-200': appointment.status === 'canceled',
+                // 'bg-orange-200': appointment.status === 'confirmed'
               }">
             <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
@@ -145,29 +121,24 @@ const buttonTexxt = (appointment) => {
             <td class="px-3 py-2 text-base">{{ appointment.time }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.doctor.name }} {{ appointment.doctor.surname }}</td>
             <td class="px-3 py-2 flex flex-col space-y-1">
-              <button @click="openModal(appointment, 'confirmed')" 
-                      :disabled="appointment.status === 'confirmed'" 
-                      class="px-2 py-1 bg-orange-500 text-white rounded">
+              <button @click="openModal(appointment, 'completed')" 
+                      :disabled="appointment.status === 'completed'" 
+                    class="px-2 py-1 bg-gray-500 text-white rounded">
                 {{ buttonText(appointment) }}
-            </button>
-                <button @click="openModal(appointment, 'canceled')" 
-                      :disabled="appointment.status === 'canceled'" 
-                      class="px-2 py-1 bg-red-500 text-white rounded">
-                {{ buttonTexxt(appointment) }}
-            </button>
-
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
     
+    <!-- Modal për konfirmim -->
     <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div class="bg-white p-6 rounded shadow-lg">
         <p class="text-lg mb-4">{{ modalText }}</p>
         <div class="flex justify-center space-x-2">
-          <button @click="showModal = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-          <button @click="confirmAction" class="px-4 py-2 bg-blue-500 text-white rounded">Confirm</button>
+          <!-- <button @click="showModal = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button> -->
+          <button @click="confirmAction" class="px-4 py-2 bg-gray-500 text-white rounded">Complete</button>
         </div>
       </div>
     </div>

@@ -22,18 +22,11 @@ onMounted(() => {
   showSpinner.value = true;
   showSpinner.value = true; // Fillon loading
 
-getDoctorss(departmentId)
-  .then((response) => {
-    console.log("API Response:", response); // Kontrollo përgjigjen e API
-
-    if (response.data && Array.isArray(response.data.data)) {
-      doctors.value = response.data.data;
-      console.log("Doktorët e marrë:", doctors.value);
-    } else {
-      console.error("Struktura e përgjigjes nuk është e pritur:", response);
-      doctors.value = []; 
-    }
-  })
+getDoctors(departmentId)
+.then(() => {
+      alert('Doctor deleted successfully');
+      emit('closeDeleteModal');
+    })
   .catch((error) => {
     console.error("Gabim në marrjen e doktorëve:", error);
     doctors.value = [];

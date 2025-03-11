@@ -13,6 +13,20 @@ export async function getAppointments(pageQuery = '', filters = {}) {
         return null;
     }
 }
+
+export async function getAppointmentsConfirmed(pageQuery = '', filters = {}) {
+    try {
+        return await get('api/confirmed' + pageQuery, {params: filters}).then(res =>{
+            if(res.status === 200){
+                    return res.data;
+                }
+                return null
+            }
+        );
+    }catch (e) {
+        return null;
+    }
+}
 export async function storeAppointment(form) {
     try {
         return await post('api/appointments', form).then(res =>{

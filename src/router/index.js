@@ -16,6 +16,7 @@ import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
 import CreatePayment from '@/views/Payments/Create.vue'
 import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
 import PaymentSection from '@/components/Landing/PaymentSection.vue'
+import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
 
 
 const router = createRouter({
@@ -56,6 +57,13 @@ const router = createRouter({
           name: 'createAppointment',
           component: CreateAppointment,
         },
+
+        {
+          path: '/appointments/confirmed',
+          name: 'confirmed-appointments',
+          component: ConfirmedAppointment,
+        },
+
 
         {
           path: '/payments/create',
