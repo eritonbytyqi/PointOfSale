@@ -17,6 +17,8 @@ import CreatePayment from '@/views/Payments/Create.vue'
 import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
 import PaymentSection from '@/components/Landing/PaymentSection.vue'
 import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
+import Login from '@/views/Auth/Login.vue'
+
 
 
 const router = createRouter({
@@ -25,6 +27,11 @@ const router = createRouter({
     {
       path: '/',
       redirect: '/landing'   
+    },
+    {
+      path: '/login',
+      name: 'login',
+     component: Login,
     },
     {
       path: '/landing',

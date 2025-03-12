@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import {useUserStore} from "../stores/userSession";
+ import {useUserStore} from "../stores/userSession";
 import router from "@/router";
 // import {useNotification} from "@kyvg/vue3-notification";
 
@@ -17,17 +17,28 @@ export const api = axios.create({
     }
 })
 
-// api.interceptors.request.use((config) => {
-//     const userSession = useUserStore()
+api.interceptors.request.use((config) => {
+    const userSession = useUserStore()
 
-//     if (userSession.token) {
-//         config.headers = {
-//             ...config.headers,
-//             Authorization: `Bearer ${userSession.token}`,
-//         }
-//     }
-//     return config
-// })
+    if (userSession.token) {
+        config.headers = {
+            ...config.headers,
+            Authorization: `Bearer ${userSession.token}`,
+        }
+    }
+    return config
+})
+
+api.interceptors.response.use(undefined, function (res) {
+    switch (res.response.status) {
+        case 401:
+            router.push({name: 'login'})
+            notify({
+                title: 'Unauthenticated',
+                type: "error",
+                text: 'You are not logged in',
+            });
+            break;
 
 // api.interceptors.response.use(undefined, function (res) {
 //     switch (res.response.status) {
@@ -80,8 +91,8 @@ export const api = axios.create({
 //                 text: res.message,
 //             });
 //             break;
-//     }
-// });
+    }
+ });
 
 export async function get(path, data) {
     return await api.get(path, data);
