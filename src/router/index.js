@@ -6,7 +6,7 @@ import AppLayout from "@/views/Layout/AppLayout.vue"
 import Appointments from "@/views/Appointments/Index.vue"
 import CreateDoctor from "@/views/Doctors/Create.vue"
 import Doctors from "@/views/Doctors/Index.vue"
-import Payment from "@/views/Payments/index.vue"
+import Payment from "@/views/Payments/Index.vue"
 import EditDoctor from "@/views/Doctors/Edit.vue"
 import Departments from "@/views/Departments/Index.vue"
 import EditDepartment from "@/views/Departments/Edit.vue"
@@ -18,6 +18,8 @@ import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
 import PaymentSection from '@/components/Landing/PaymentSection.vue'
 import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
 import Login from '@/views/Auth/Login.vue'
+import Home from "@/views/Home/Index.vue"
+import PendingAppointment from '@/views/Appointments/PendingAppointment.vue'
 
 
 
@@ -58,7 +60,11 @@ const router = createRouter({
           name: 'appointments',
           component: Appointments,
         },
-
+        {
+          path: '/home',
+          name: 'home',
+          component: Home,
+        },
         {
           path: '/appointments/create',
           name: 'createAppointment',
@@ -70,8 +76,11 @@ const router = createRouter({
           name: 'confirmed-appointments',
           component: ConfirmedAppointment,
         },
-
-
+        {
+          path: '/appointments/pending',
+          name: 'pending-appointments',
+          component: PendingAppointment,
+        },
         {
           path: '/payments/create',
           name: 'createPayment',
