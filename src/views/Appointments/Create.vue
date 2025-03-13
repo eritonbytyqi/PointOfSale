@@ -77,7 +77,7 @@ const submit = async () => {
     await post('/api/appointments', form);
 
     // Dërgo ngjarjen te Event Bus
-    router.push("/payments/create");
+    router.push("/payments/create/Admin");
   
 router
   } catch (error) {
