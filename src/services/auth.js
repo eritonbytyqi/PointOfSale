@@ -26,3 +26,36 @@ export async function login(form) {
         return null;
     }
 }
+export const checkEmailExists = async (email) => {
+    try {
+        const response = await axios.post('/api/check-email', { email });
+        return response.data.exists; // Returns true if the email exists, false if not
+    } catch (error) {
+        console.error(error);
+        return false;  // In case of an error, return false
+    }
+};
+export async function logout(form) {
+    try {
+        return await post('api/logout', form).then(res =>{
+            if (res) {
+                if (res.status === 200) {
+                    useUserStore().setUser(
+                        {
+                            id: res.data.user.id,
+                            name: res.data.user.name,
+                            email: res.data.user.email,
+                        }
+                    );
+                    useUserStore().setToken(res.data.token);
+                    useUserStore().setIsLoggedIn();
+                    return res.data.user;
+                }
+            }
+                return null
+            }
+        );
+    }catch (e) {
+        return null;
+    }
+}

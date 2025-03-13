@@ -47,6 +47,7 @@ export async function updatePayment(id, form) {
         const response = await patch(`api/payments/${String(id)}`, form);
         if (response.status === 200) {
             return response.data;
+
         }
         return null;
     } catch (e) {
@@ -65,6 +66,23 @@ export async function deletePayment(id) {
             }
         );
     }catch (e) {
+        return null;
+    }
+}
+
+export async function updatePaymentStatus(id, status) {
+    try {
+  
+        const response = await patch('api/payments/' + id, { status });
+
+        if (response.status === 200) {
+            return response;  
+        }
+
+        return null;
+    } catch (error) {
+        // Catch any errors and return null if something went wrong
+        console.error("Error updating payment status:", error);
         return null;
     }
 }

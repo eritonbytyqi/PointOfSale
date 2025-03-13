@@ -59,7 +59,7 @@ const showMessage = ref(false);
 
 const fetchDepartments = async () => {
     try {
-        const response = await get('/api/departments');
+        const response = await get('/api/departments/Client');
         departments.value = response.data.result.data;
     } catch (error) {
         console.error("Gabim në marrjen e departamenteve:", error);
@@ -75,12 +75,29 @@ const closeModal = () => {
 
 const submit = async () => {
     try {
-        await post('/api/appointments', form);
+        await post('/api/appointment/Client', form);
         showMessage.value = true;
     } catch (error) {
         console.error("Gabim në krijimin e terminit:", error);
     }
 };
+
+
+
+
+const minDate = ref(getCurrentDate());
+
+function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Muaji është 0-based, prandaj shtojmë 1
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // Formatimi: YYYY-MM-DD
+}
+
+const isFormValid = computed(() => {
+    return form.department_id && form.doctor_id && form.fullname && form.email && form.phoneNumber && form.personal_id && form.date && form.time;
+});
 </script>
 
 <template>
@@ -143,10 +160,17 @@ const submit = async () => {
                 <InputText v-model="form.email" label="Email" required />
                 <InputText v-model="form.phoneNumber" label="Phone Number" required />
                 <InputText v-model="form.personal_id" label="Personal ID" required />
-                <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
-                    <input type="date" id="date" v-model="form.date" @change="handleDateChange" class="mt-1 block w-full p-2 border rounded-md" />
-                </div>
+             <div>
+        <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
+        <input
+            type="date"
+            id="date"
+            v-model="form.date"
+            @change="handleDateChange"
+            class="mt-1 block w-full p-2 border rounded-md"
+            :min="minDate" 
+        />
+    </div>
                 <div>
                     <label for="time" class="block text-sm font-medium text-gray-700">Time:</label>
                     <select id="time" v-model="form.time" class="mt-1 block w-full p-2 border rounded-md">
@@ -156,7 +180,7 @@ const submit = async () => {
                         </option>
                     </select>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 px-4 rounded-md shadow-md">
+                <button type="submit" :disabled="!isFormValid" class="w-full bg-blue-600 text-white disabled:bg-gray-400 font-semibold py-2 px-4 hover:bg-blue-700 rounded-md shadow-md">
                     Save
                 </button>
             </form>

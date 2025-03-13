@@ -5,20 +5,24 @@
         <div class="relative ml-auto">
           <button 
             class="flex items-center space-x-2 px-4 py-2 bg-gray-700 text-white rounded-md shadow-md "
-            @click="toggleDropdown"
+      @click="toggleDropdown"
           >
             <span>Admin</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
             </svg>
+      
           </button>
   
           <div v-if="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
             <ul class="py-1 text-gray-700">
              
               <li>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</a>
-              </li>
+<button @click="logoutAndRedirect" class="py-2 px-4 text-indigo-600 text-sm rounded-md hover:text-indigo-700">
+  Sign Out
+</button>
+
+           </li>
             </ul>
           </div>
         </div>
@@ -26,23 +30,34 @@
     </nav>
   </template>
   
-  <script>
-  export default {
-    name: "Navbar",
-    data() {
-      return {
-        // Flag to control dropdown visibility
-        isDropdownOpen: false
-      };
-    },
-    methods: {
-      // Toggle the dropdown visibility
-      toggleDropdown() {
-        this.isDropdownOpen = !this.isDropdownOpen;
-      }
-    }
-  };
-  </script>
+  <script setup>
+
+import { useRouter } from 'vue-router'; // Import Vue Router
+import { logout } from '@/services/auth'; // Import the logout function
+import {ref} from 'vue'
+const router = useRouter();
+
+// State to control the dropdown
+let isDropdownOpen = ref(false);
+
+// Function to toggle the dropdown
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
+};
+
+// Function to logout and redirect
+const logoutAndRedirect = async () => {
+  try {
+    await logout(); // Call the logout function
+    router.push('/landing'); // Redirect to the login page
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+};
+
+
+</script>
+
   
   <style scoped>
   /* Profile Dropdown adjustments */

@@ -40,7 +40,19 @@ export async function storeAppointment(form) {
         return null;
     }
 }
-
+export async function storeAppointmentClient(form) {
+    try {
+        return await post('api/appointments', form).then(res =>{
+                if(res.status === 200){
+                    return res.data;
+                }
+                return null
+            }
+        );
+    }catch (e) {
+        return null;
+    }
+}
 export const updateAppointmentStatus = async (id, status) => {
     // Kontrollo që statusi është një nga vlerat e mundshme
     const validStatuses = ['pending', 'confirmed', 'completed', 'canceled'];

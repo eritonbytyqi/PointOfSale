@@ -10,6 +10,7 @@ import Payment from "@/views/Payments/index.vue"
 import EditDoctor from "@/views/Doctors/Edit.vue"
 import Departments from "@/views/Departments/Index.vue"
 import EditDepartment from "@/views/Departments/Edit.vue"
+import EditPayment from "@/views/Payments/edit.vue"
 import CreateDepartment from "@/views/Departments/Create.vue"
 import AddDoctor from '@/views/Doctors/AddDoctor.vue'
 import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
@@ -18,6 +19,7 @@ import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
 import PaymentSection from '@/components/Landing/PaymentSection.vue'
 import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
 import Login from '@/views/Auth/Login.vue'
+import logout  from '@/views/auth/logout.vue'
 
 
 
@@ -32,6 +34,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
      component: Login,
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+     component: logout,
     },
     {
       path: '/landing',
@@ -58,7 +65,11 @@ const router = createRouter({
           name: 'appointments',
           component: Appointments,
         },
-
+        {
+          path: '/payments/:id/edit',
+          name: 'editPayment',
+          component: EditPayment,
+        },
         {
           path: '/appointments/create',
           name: 'createAppointment',

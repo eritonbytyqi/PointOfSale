@@ -92,8 +92,24 @@
 </template>
 
 <script setup>
+import eventBus from "@/event-bus";
+import { watch } from "vue";
+
+const notifications = eventBus.notifications;
+
+watch(notifications, (newNotifications) => {
+  if (newNotifications.length > 0) {
+    // Shfaqni notifikimin
+    const latestNotification = newNotifications[newNotifications.length - 1];
+    alert(`${latestNotification.title}: ${latestNotification.message}`);
+  }
+});
 import { ref } from 'vue';
 const isOpen = ref(false);
+
+
+
+
 </script>
 
 <style scoped>

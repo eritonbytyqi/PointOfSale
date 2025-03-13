@@ -3,6 +3,9 @@ import { ref, reactive, onMounted, watch, computed } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
 import InputText from "@/components/InputText.vue";
 import router from "@/router";
+import eventBus from "@/event-bus";
+
+
 
 const filteredDoctors = computed(() => {
     const selectedDepartment = departments.value.find(dept => dept.id === form.department_id);
@@ -55,7 +58,6 @@ const fetchAvailableTimes = async () => {
 watch([() => form.department_id, () => form.date, () => form.doctor_id], fetchAvailableTimes);
 
 const departments = ref([]);
-const showMessage = ref(false);
 
 const fetchDepartments = async () => {
     try {
@@ -70,17 +72,35 @@ onMounted(fetchDepartments);
 
 const closeModal = () => {
     showMessage.value = false;
-    router.push("/landing");
+    router.push("/appointments");
 };
 
+const showMessage = ref(false);
 const submit = async () => {
-    try {
-        await post('/api/appointments', form);
-        showMessage.value = true;
-    } catch (error) {
-        console.error("Gabim në krijimin e terminit:", error);
-    }
+  try {
+    await post('/api/appointments', form);
+
+    // Dërgo ngjarjen te Event Bus
+    eventBus.addNotification({
+      title: "Appointment Created",
+      message: "Your appointment has been successfully created!",
+    });
+
+  } catch (error) {
+    console.error("Gabim gjatë krijimit të terminit:", error);
+  }
 };
+
+
+const minDate = ref(getCurrentDate());
+
+function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); 
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`; // Formatimi: YYYY-MM-DD
+}
 </script>
 
 <template>
@@ -112,7 +132,14 @@ const submit = async () => {
                 <InputText v-model="form.personal_id" label="Personal ID" required />
                 <div>
                     <label for="date" class="block text-sm font-medium text-gray-700">Date:</label>
-                    <input type="date" id="date" v-model="form.date" @change="handleDateChange" class="mt-1 block w-full p-2 border rounded-md" />
+                    <input
+                        type="date"
+                        id="date"
+                        v-model="form.date"
+                        @change="handleDateChange"
+                        class="mt-1 block w-full p-2 border rounded-md"
+                        :min="minDate"  
+                    />
                 </div>
                 <div>
                     <label for="time" class="block text-sm font-medium text-gray-700">Time:</label>
@@ -129,6 +156,8 @@ const submit = async () => {
             </form>
         </div>
     </div>
+
+    <!-- Modal for Thank You message -->
     <div v-if="showMessage" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold text-center mb-4">Thank you for your appointment!</h2>
@@ -139,3 +168,4 @@ const submit = async () => {
         </div>
     </div>
 </template>
+
