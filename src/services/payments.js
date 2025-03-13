@@ -41,6 +41,19 @@ export async function storePayment(form) {
         return null;
     }
 }
+export async function storePaymentt(form) {
+    try {
+        return await post('api/appointments/${appointmentId}/payments', form).then(res =>{
+                if(res.status === 200){
+                    return res.data;
+                }
+                return null
+            }
+        );
+    }catch (e) {
+        return null;
+    }
+}
 export async function updatePayment(id, form) {
     try {
        

@@ -12,12 +12,15 @@ const closeDeleteModal = () => {
   emit('closeDeleteModal');
 };
 
-
 const submit = () => {
   deleteDoctor(props.doctorId)
     .then(() => {
-      alert('Doctor deleted successfully');
       emit('closeDeleteModal');
+      
+      // Pas fshirjes së doktorit, rifresko faqen
+      setTimeout(() => {
+        window.location.reload(); // Rifresko faqen
+      }, 1000); // Prit 1 sekondë për të siguruar që modal-i është mbyllur
     })
     .catch((error) => {
       console.error('Error deleting doctor:', error);

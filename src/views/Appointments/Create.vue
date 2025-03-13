@@ -4,6 +4,7 @@ import { get, post } from "@/composable/useApi.js";
 import InputText from "@/components/InputText.vue";
 import router from "@/router";
 import eventBus from "@/event-bus";
+import { useRoute } from "vue-router";
 
 
 
@@ -69,6 +70,13 @@ const fetchDepartments = async () => {
 };
 
 onMounted(fetchDepartments);
+const appointmentId = ref(null);  // Sigurohuni që `appointmentId` është një `ref` dhe është i përcaktuar
+const route = useRoute();
+// Merrni `appointment_id` nga URL dhe vendoseni në `appointmentId`
+onMounted(() => {
+  appointmentId.value = route.query.appointment_id;  // Sigurohuni që të përdorni `appointmentId.value`
+  console.log("Appointment ID nga URL:", appointmentId.value); // Kontrolloni nëse është e saktë
+});
 
 
 const showMessage = ref(false);
@@ -77,7 +85,7 @@ const submit = async () => {
     await post('/api/appointments', form);
 
     // Dërgo ngjarjen te Event Bus
-    router.push("/payments/create/Admin");
+    router.push({ path: '/payments/create/Admin', query: { appointment_id: appointmentId } });
   
 router
   } catch (error) {

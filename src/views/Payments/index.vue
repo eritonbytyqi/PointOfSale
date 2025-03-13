@@ -1,15 +1,12 @@
 <script setup>
-import { ref, computed,watch, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { getPayments, updatePaymentStatus } from '@/services/payments';
 import Spinner from "@/components/Spinner.vue";
-import DeleteModal from "@/views/Doctors/DeleteModal.vue";
 import { useRoute, useRouter } from 'vue-router';
 
 const payments = ref([]);
-const selectedPayment = ref([]);
 const searchQuery = ref('');
 const showSpinner = ref(false);
-const showDeleteModal = ref(false);
 const router = useRouter();
 
 // Function to mark payment as completed
@@ -28,18 +25,13 @@ const markAsCompleted = (paymentId) => {
           completedPayments.push(paymentId);
           localStorage.setItem('completedPayments', JSON.stringify(completedPayments));
         }
-    window.location.reload();  // Reload the page immediately after completing
- 
-        // Hide the "Complete" button after 3 seconds and change its text to "Completed"
-        payment.showCompleteButton = false;
 
-        // Optionally, remove it from the current list
+        // Remove the payment from the current list after completing
         payments.value = payments.value.filter(p => p.id !== paymentId);
 
-        // Wait for 3 seconds and then hide the button text
+        // Optional: Refresh the page or give feedback
         setTimeout(() => {
-          payment.showCompleteButton = false;
-        }, 3000); // Hide after 3 seconds
+        }, 1000);
       })
       .catch((error) => {
         console.error('Error updating payment status:', error);
@@ -53,10 +45,6 @@ const loadPayments = () => {
   getPayments()
     .then((data) => {
       payments.value = data.result.data;
-
-      // Check for completed payments (from localStorage)
-      const completedPayments = JSON.parse(localStorage.getItem('completedPayments')) || [];
-      payments.value = payments.value.filter(payment => !completedPayments.includes(payment.id)); // Remove completed payments
     })
     .catch((error) => {
       console.error('Error fetching payments:', error);
@@ -77,19 +65,10 @@ const filteredPayments = computed(() => {
     payment.appointment?.fullname.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
-
-// Watch for payment status changes to trigger reload
-watch(() => selectedPayment.value.status, (newValue) => {
-  if (newValue === "completed") {
-    window.location.reload();  // Reload the page when payment status is "completed"
-  }
-});
-
 </script>
 
 <template>
   <Spinner v-if="showSpinner" />
-  <DeleteModal v-if="showDeleteModal" @closeDeleteModal="closeDeleteModal" />
 
   <div class="p-6 bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg min-h-screen">
     <h1 class="text-4xl font-bold text-center text-black-600 mb-8">Payments Dashboard</h1>
@@ -136,11 +115,10 @@ watch(() => selectedPayment.value.status, (newValue) => {
 
               <!-- Complete button for marking the payment as completed -->
               <button 
-                v-if="payment.showCompleteButton !== false" 
+                v-if="payment.status !== 'Completed'" 
                 @click="markAsCompleted(payment.id)" 
-                :disabled="payment.status === 'Completed'"
                 class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-700 transition-all duration-200">
-                {{ payment.status === 'Completed' ? 'Completed' : 'Complete' }}
+                Complete
               </button>
             </td>
           </tr>

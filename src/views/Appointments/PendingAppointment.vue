@@ -121,7 +121,7 @@ const buttonTexxt = (appointment) => {
             <td class="px-3 py-2 text-base">{{ appointment.personal_id }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.date }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.time }}</td>
-            <td class="px-3 py-2 text-base">{{ appointment.doctor.name }} {{ appointment.doctor.surname }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.doctor?.name }} {{ appointment.doctor?.surname }}</td>
             <td class="px-3 py-2 flex flex-col space-y-1">
               <button @click="openModal(appointment, 'confirmed')" 
                       :disabled="appointment.status === 'confirmed'" 

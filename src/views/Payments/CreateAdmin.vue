@@ -85,7 +85,7 @@ console.log("pagesa u krye me sukses");
         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
         <option value="" disabled>Select a payment method</option>
         <option value="cash">Cash</option>
-        <option value="paypal">Paypall</option>
+        <option value="paypal">Paypal</option>
         <option value="credit_card">Credit Card</option>
     </select>
 </div>
