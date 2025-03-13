@@ -10,7 +10,7 @@ import Payment from "@/views/Payments/Index.vue"
 import EditDoctor from "@/views/Doctors/Edit.vue"
 import Departments from "@/views/Departments/Index.vue"
 import EditDepartment from "@/views/Departments/Edit.vue"
-import EditPayment from "@/views/Payments/edit.vue"
+import EditPayment from "@/views/Payments/Edit.vue"
 import CreateDepartment from "@/views/Departments/Create.vue"
 import AddDoctor from '@/views/Doctors/AddDoctor.vue'
 import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
@@ -22,7 +22,7 @@ import PaymentSection from '@/components/Landing/PaymentSection.vue'
 import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
 import Login from '@/views/Auth/Login.vue'
 
-import logout  from '@/views/auth/logout.vue'
+import logout  from '@/views/Auth/Logout.vue'
 
 import Home from "@/views/Home/Index.vue"
 import PendingAppointment from '@/views/Appointments/PendingAppointment.vue'
@@ -69,7 +69,7 @@ const router = createRouter({
     },
 
     {
-      path: '',
+      path: '/home',
       name: 'layout',
       component: AppLayout,
       children: [

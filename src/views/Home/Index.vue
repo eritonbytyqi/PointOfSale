@@ -62,9 +62,6 @@ onMounted(async () => {
       <div class="mb-4 text-3xl font-bold text-gray-800">
         Hello, Valza
       </div>
-      <div class="mb-4 text-xl font-semibold text-gray-800">
-        "Çdo moment i përkushtuar për pacientët, është një hap drejt shërimit të vërtetë."
-      </div>
 
       <!-- Statistics Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
