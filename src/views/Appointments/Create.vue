@@ -70,10 +70,6 @@ const fetchDepartments = async () => {
 
 onMounted(fetchDepartments);
 
-const closeModal = () => {
-    showMessage.value = false;
-    router.push("/appointments");
-};
 
 const showMessage = ref(false);
 const submit = async () => {
@@ -81,11 +77,9 @@ const submit = async () => {
     await post('/api/appointments', form);
 
     // Dërgo ngjarjen te Event Bus
-    eventBus.addNotification({
-      title: "Appointment Created",
-      message: "Your appointment has been successfully created!",
-    });
-
+    router.push("/payments/create");
+  
+router
   } catch (error) {
     console.error("Gabim gjatë krijimit të terminit:", error);
   }

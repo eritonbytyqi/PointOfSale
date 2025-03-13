@@ -15,6 +15,8 @@ import CreateDepartment from "@/views/Departments/Create.vue"
 import AddDoctor from '@/views/Doctors/AddDoctor.vue'
 import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
 import CreatePayment from '@/views/Payments/Create.vue'
+import CreateAdminPayment from '@/views/Payments/CreateAdmin.vue'
+
 import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
 import PaymentSection from '@/components/Landing/PaymentSection.vue'
 import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
@@ -61,6 +63,12 @@ const router = createRouter({
       component: PaymentSection,
     },
     {
+      path: '/payments/create',
+      name: 'createPayment',
+      component: CreatePayment,
+    },
+
+    {
       path: '',
       name: 'layout',
       component: AppLayout,
@@ -98,16 +106,16 @@ const router = createRouter({
           name: 'pending-appointments',
           component: PendingAppointment,
         },
-        {
-          path: '/payments/create',
-          name: 'createPayment',
-          component: CreatePayment,
-        },
-
+      
         {
           path: '/payments',
           name: 'payments',
           component: Payment,
+        },
+        {
+          path: '/payments/create',
+          name: 'createPayment',
+          component: CreateAdminPayment,
         },
         {
           path: "/appointments/confirmed",
