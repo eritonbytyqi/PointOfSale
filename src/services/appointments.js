@@ -27,6 +27,19 @@ export async function getAppointmentsConfirmed(pageQuery = '', filters = {}) {
         return null;
     }
 }
+export async function getAppointmentsPending(pageQuery = '', filters = {}) {
+    try {
+        return await get('api/pending' + pageQuery, {params: filters}).then(res =>{
+            if(res.status === 200){
+                    return res.data;
+                }
+                return null
+            }
+        );
+    }catch (e) {
+        return null;
+    }
+}
 export async function storeAppointment(form) {
     try {
         return await post('api/appointments', form).then(res =>{

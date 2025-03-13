@@ -2,8 +2,6 @@
 import router from '@/router/index.js';
 import { login, checkEmailExists } from '@/services/auth.js';
 import { reactive } from 'vue';
-import { watch } from 'vue';
-
 
 const form = reactive({
   email: "",
@@ -14,37 +12,38 @@ const errors = reactive({
   email: "",
   password: "",
 });
-watch(() => form.email, (newValue) => {
-  if (newValue === "") {
-    window.location.reload(); // Refresh the page if the email is cleared
-  }
-});
+
 const submit = async () => {
   // Kontrollo validimin e formës
   if (!validateForm()) return;
 
   // Kontrollo nëse emaili është i regjistruar
   const emailExists = await checkEmailExists(form.email);
-  if (emailExists) {
-    return;
-  }else{
-    errors.email = "This email is not registered.";
 
+  // Nëse emaili nuk është regjistruar, shfaq gabimin dhe kthehu
+  if (emailExists) {
+    errors.email = "This email is not registered.";
+    errors.password = ""; // Pastroni gabimin për password-in
+    return;
+  } else {
+    errors.email = ""; // Pastroni gabimin për email-in nëse ekziston
   }
 
   // Kryej login-in nëse emaili ekziston
   login(form).then(res => {
     if (res) {
-      router.push({ name: 'layout' });
+      router.push({ name: 'home' });
+    } else {
+      errors.password = "Incorrect password."; // Gabim nëse passwordi është gabim
     }
+  }).catch(() => {
+    errors.password = "An error occurred during login.";
   });
 };
 
 // Funksioni i validimit
 const validateForm = () => {
   let isValid = true;
-
-
 
   // Kontrollo passwordin
   if (!form.password) {
@@ -59,9 +58,8 @@ const validateForm = () => {
 
   return isValid;
 };
-
-
 </script>
+
 
 
 <template>
