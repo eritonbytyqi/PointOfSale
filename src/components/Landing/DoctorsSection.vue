@@ -14,7 +14,7 @@ const doctors = ref([
   },
   {
     id: 2,
-    name: "Dr. Sophia Williams",
+    name: "Dr. Daniel Martinez",
     specialty: "Neurologist",
     image: new URL('@/assets/doctors/2.jpg', import.meta.url).href,
     shortDesc: "A highly skilled neurologist specializing in stroke management.",
@@ -41,7 +41,7 @@ const doctors = ref([
   },
   {
     id: 5,
-    name: "Dr. Daniel Martinez",
+    name: "Dr. Sophia  Williams",
     specialty: "Ophthalmologist",
     image: new URL('@/assets/doctors/5.jpg', import.meta.url).href,
     shortDesc: "A trusted ophthalmologist specializing in vision correction.",

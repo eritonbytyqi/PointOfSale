@@ -19,7 +19,7 @@ import doctorhome from '@/assets/home/doctorhome.jpg';
         class="mt-6 inline-block bg-white text-blue-600 px-8 py-4 rounded-lg shadow-lg hover:bg-gray-200 transition">
         Book Appointment
       </router-link>
-    </div>
+    </div>    
     
     <svg class="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 320">
   <defs>
@@ -32,4 +32,5 @@ import doctorhome from '@/assets/home/doctorhome.jpg';
 </svg>
 
   </section>
+  
 </template>
