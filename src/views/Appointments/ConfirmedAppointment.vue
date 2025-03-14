@@ -144,3 +144,24 @@ const buttonText = (appointment) => {
     </div>
   </div>
 </template>
+
+
+<!-- Controllerat mashum kan tbojn me menaxhimin e kerkesave http. dmth e marrin kerkesen nga frontendi apo klienti dhe e perpunojn dhe kthen nje pergjigje zakonisht nje Resource apo nje response zakonisht json per klientin. 
+Requests perdoren me i validu tdhanat qe vijn nga klienti.
+Serviset kan tbojn me biznes logjiken e projektit dmth me veprime qe kan tbojn me userin psh me regjistru, me ndrru pass, me caktu role etj.
+Resources perdoren psh per me kqyr se a osht empty apo a ka collection dmth gru -->
+
+<!-- 
+Resources perdoren psh per me kqyr se a osht empty apo a ka collection dmth grup t objekteve.
+Trait osht ni logjik qe mujm me riperdor nklasa tndryshme pa trashegu klas tjeter.
+Repositories perdoren shpesh me serviset, ajo veq e ndan logjiken e aksesit ne te dhena nga Models edhe krijon arkitektur ma tpastert. pra me DB queries -->
+<!-- 
+
+Models perfaqsojn tabelen e bazes se tdhenave dhe gjithashtu menaxhon lidhjet apo relations midis tyre.
+Config sherben per menaxhimin e lidhjes me databaz, konfigurimin e cache apo sesioneve, autentifikimin edhe autorizimin, sherbime tjashtme si Mail.
+prit
+Route::get() perdoret kur kemi edhe url ndersa Route::post() kur e kemi metoden post
+
+.env sbohet push ngit per qato e krijojm .env.example pa pjeset e ndjeshme si APP_KEY
+
+API kthen vetem json psh api/users -->

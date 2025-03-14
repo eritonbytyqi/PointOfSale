@@ -43,7 +43,6 @@ getDoctorss(departmentId)
 
 });
 
-// 🔹 Fshij doktorin nga departamenti
 const deleteDoctor = async () => {
   if (!selectedDoctor.value) {
     message.value = "Please select a doctor.";
@@ -51,31 +50,40 @@ const deleteDoctor = async () => {
     return;
   }
 
+  // Sigurohu që tokeni është i vlefshëm
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    message.value = "No valid authentication token found.";
+    success.value = false;
+    return;
+  }
+
   showSpinner.value = true;
   try {
-    await deleteDoctorFromDepartment(departmentId, selectedDoctor.value);
+    // Thirrja e funksionit deleteDoctorFromDepartment duke kaluar tokenin
+    await deleteDoctorFromDepartment(departmentId, selectedDoctor.value, token);
     message.value = "Doctor removed successfully!";
     success.value = true;
     router.push({ name: "departments" }); // Kthehu te lista e departamenteve
-} catch (error) {
+  } catch (error) {
     showSpinner.value = false;
     
     // Kontrollo nëse gabimi është 404
     if (error.response && error.response.status === 404) {
-        message.value = "Doctor not found or something wrong happened.";
+        message.value = "Doctor not found or something went wrong.";
     } else {
-        // Për çdo gabim tjetër, tregoni mesazhin e përgjithshëm të gabimit
         message.value = `Failed to remove doctor: ${error.message}`;
     }
     
     success.value = false;
     console.error("Error:", error);
-} finally {
+  } finally {
     showSpinner.value = false;
-}
-
-
+  }
 };
+
+
+
 </script>
 
 
