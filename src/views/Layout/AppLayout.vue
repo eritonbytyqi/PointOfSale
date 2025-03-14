@@ -22,46 +22,16 @@ import Sidebar from './Sidebar.vue';  // Import Sidebar component
 import Navbar from './Navbar.vue';    // Import Navbar component
 import { useNotification } from '@kyvg/vue3-notification';  // Import useNotification hook
 import { watchEffect } from "vue";
-import eventBus from "@/event-bus"; // Import eventBus for notification management
 
 const { notify } = useNotification();  // Inicializoni notify për të përdorur notifikimet
 
-// Duke dëgjuar për ngjarjet e event bus dhe duke treguar notifikimin
-watchEffect(() => {
-    if (eventBus.notifications.length > 0) {
-        const notification = eventBus.notifications[eventBus.notifications.length - 1];
-        notify({
-            title: notification.title,
-            text: notification.message,
-            type: 'success', // Ose mund ta bëni këtë 'error' në varësi të mesazhit
-        });
-    }
-});
+
 
 export default {
   name: "MainLayout",
   components: {
     Sidebar,   // Register Sidebar component
     Navbar,    // Register Navbar component
-  },
-  setup() {
-    // Access the notification function for programmatically showing notifications
-    const { notify } = useNotification();
-
-    // Funksion për të triggeruar një notifikim
-    const showNotification = () => {
-      eventBus.addNotification({
-        title: 'Notification Title',
-        message: 'This is a notification message.',
-      });
-    };
-
-    // Call this function somewhere when needed, like on form submission or certain action
-    // showNotification();
-
-    return {
-      showNotification,
-    };
   },
 };
 </script>
