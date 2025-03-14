@@ -36,6 +36,7 @@ const loadPayments = () => {
   showSpinner.value = true;
   getPayments()
     .then((data) => {
+      console.log(data);  // Kontrollo të dhënat që po merr
       payments.value = data.result.data;
 
       const completedPayments = JSON.parse(localStorage.getItem('completedPayments')) || [];
@@ -48,6 +49,7 @@ const loadPayments = () => {
       showSpinner.value = false;
     });
 };
+
 
 onMounted(() => {
   loadPayments();
