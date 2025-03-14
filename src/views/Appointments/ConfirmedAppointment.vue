@@ -49,6 +49,10 @@ const confirmAction = () => {
     changeStatus(selectedAppointment.value, selectedAction.value);
   }
   showModal.value = false;
+  setTimeout(() => {
+        window.location.reload(); // Rifresko faqen
+      }, 1000); // Prit 1 sekondë për të siguruar që modal-i është mbyllur
+
 };
 
 const openModal = (appointment, action) => {
@@ -104,14 +108,14 @@ const buttonText = (appointment) => {
               :class="{
                 'bg-green-100': appointment.status === 'completed',
               }">
-            <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.department?.name }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.email }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.phoneNumber }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.personal_id }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.date }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.time }}</td>
-            <td class="px-3 py-2 text-base">{{ appointment.doctor.name }} {{ appointment.doctor.surname }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.doctor?.name }} {{ appointment.doctor?.surname }}</td>
             <td class="px-3 py-2 flex flex-col space-y-1">
               <button @click="openModal(appointment, 'completed')" 
                       :disabled="appointment.status === 'completed'" 

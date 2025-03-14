@@ -89,8 +89,8 @@ export const deleteDoctorFromDepartment = async (departmentId, doctorId, token) 
     try {
       const response = await axios.delete(`http://127.0.0.1:8000/api/departments/${departmentId}/delete-doctor/${doctorId}`, {
         headers: {
-          'Authorization': `Bearer ${token}` 
-        }
+            Authorization: `Bearer ${token}`,
+          }
       });
       return response.data;
     } catch (error) {

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { getPayments, updatePaymentStatus } from '@/services/payments';
 import Spinner from "@/components/Spinner.vue";
 import { useRoute, useRouter } from 'vue-router';
@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 const payments = ref([]);
 const searchQuery = ref('');
 const showSpinner = ref(false);
+const selectedPayment = ref(null); // Add this to define selectedPayment
 const router = useRouter();
 
 const markAsCompleted = (paymentId) => {
@@ -21,14 +22,9 @@ const markAsCompleted = (paymentId) => {
           completedPayments.push(paymentId);
           localStorage.setItem('completedPayments', JSON.stringify(completedPayments));
         }
-      window.location.reload(); 
- 
+        window.location.reload(); 
         payment.showCompleteButton = false;
-
         payments.value = payments.value.filter(p => p.id !== paymentId);
-
-        setTimeout(() => {
-        }, 1000);
       })
       .catch((error) => {
         console.error('Error updating payment status:', error);
@@ -57,18 +53,19 @@ onMounted(() => {
   loadPayments();
 });
 
+// Filter payments based on search query
 const filteredPayments = computed(() => {
   return payments.value.filter(payment => 
     payment.appointment?.fullname.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
 
-watch(() => selectedPayment.value.status, (newValue) => {
+// Watch for changes in selectedPayment's status
+watch(() => selectedPayment.value?.status, (newValue) => {
   if (newValue === "completed") {
     window.location.reload();  
   }
 });
-
 </script>
 
 <template>

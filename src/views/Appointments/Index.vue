@@ -129,7 +129,7 @@ const buttonTexxt = (appointment) => {
                 'bg-red-100': appointment.status === 'canceled',
                 'bg-orange-100': appointment.status === 'confirmed'
               }">
-            <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.department?.name }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.email }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.phoneNumber }}</td>

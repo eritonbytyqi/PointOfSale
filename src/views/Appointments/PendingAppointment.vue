@@ -108,7 +108,7 @@ const buttonTexxt = (appointment) => {
               :class="{
                 'bg-gray-100': appointment.status === 'pending',
               }">
-            <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
+            <td class="px-3 py-2 text-base">{{ appointment.department?.name }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.email }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.phoneNumber }}</td>

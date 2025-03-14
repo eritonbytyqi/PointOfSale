@@ -4,6 +4,7 @@ import { get, post } from "@/composable/useApi.js";
 import InputText from "@/components/InputText.vue";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import router from "@/router";
 
 const route= useRoute();
 const appointmentId=ref(null);
@@ -25,21 +26,23 @@ amount: "$10.00",
 
 const message = ref("");
 const success = ref(false);
-
 const submit = async () => {
     try {
         console.log("Te dhenat po dergohen", form, "appId", appointmentId);
-        const response = await post('/api/appointments/${appointmentId}/payments', form);
-        if (response.status== 201){
+        const response = await post(`/api/appointments/${appointmentId}/payments`, form);
+        if (response.status == 201) {
             console.log("Pagesa u krye me sukses");
         }
         message.value = "Payment created successfully!";
         success.value = true;
         console.log(response.data);
+        
+        // Shto router.push për të çuar përdoruesin në faqen e landing
+        router.push({ name: 'landing' }); // Ose mund ta zëvendësoni 'landing' me emrin e rrugës që keni në Vue Router
     } catch (error) {
         message.value = "Error creating payment. Please check all fields.";
         success.value = false;
-    
+
         console.error("Gabim gjatë krijimit të pagesës:", error);
 
         if (error.response) {

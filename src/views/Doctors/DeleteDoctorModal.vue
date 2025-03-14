@@ -50,6 +50,8 @@ const deleteDoctor = async () => {
   }
 
   const token = localStorage.getItem('authToken');
+  console.log(localStorage.getItem('authToken')); // Kontrolloni nëse është aty
+
   if (!token) {
     message.value = "No valid authentication token found.";
     success.value = false;
