@@ -12,10 +12,8 @@ export default {
   },
   methods: {
     logoutUser() {
-      // Mund të bësh gjithashtu ndonjë logjikë për largimin si fshirja e tokenit ose statusit të përdoruesit
-      localStorage.removeItem('token'); // Ose ndonjë operacion tjetër për daljen
+      localStorage.removeItem('token');
 
-      // Pasi të bësh daljen, bëj redirect në /landing
       this.$router.push({ name: 'landing' });
     }
   }

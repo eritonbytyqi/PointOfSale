@@ -15,8 +15,8 @@ export async function getDepartments(pageQuery = '', filters = {}) {
 }
 export async function showDepartment(id) {
     try {
-        console.log("Department ID:", id); // Kontrollo ID-në
-        console.log("API URL:", 'api/departments/' + id); // Kontrollo URL-në
+        console.log("Department ID:", id); 
+        console.log("API URL:", 'api/departments/' + id);
         
         return await get('api/departments/' + id).then(res =>{
                 if(res.status === 200){
@@ -87,16 +87,15 @@ export async function addDoctorToDepartment(departmentId, doctorId) {
 
 export const deleteDoctorFromDepartment = async (departmentId, doctorId, token) => {
     try {
-      // Kërkesa DELETE ku doctorId është pjesë e URL-së dhe tokeni është i dërguar në header
       const response = await axios.delete(`http://127.0.0.1:8000/api/departments/${departmentId}/delete-doctor/${doctorId}`, {
         headers: {
-          'Authorization': `Bearer ${token}`  // Sigurohuni që tokeni është i vlefshëm
+          'Authorization': `Bearer ${token}` 
         }
       });
       return response.data;
     } catch (error) {
       console.error("Error deleting doctor:", error);
-      throw error; // Sigurohuni që të dergoni gabimin në front-end
+      throw error; 
     }
   };
   

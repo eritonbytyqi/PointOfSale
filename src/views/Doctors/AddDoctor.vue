@@ -19,13 +19,12 @@ const showSpinner = ref(false);
 
 onMounted(() => {
   showSpinner.value = true;
-  let departmentDoctors = []; // Definojmë variablën këtu që të jetë e qasshme në të gjitha .then()
-
+  let departmentDoctors = []; // E definojm qetu qe me kon e qasshme te .then()
   getDoctorss(departmentId)
     .then((departmentResponse) => {
       if (departmentResponse.data && Array.isArray(departmentResponse.data.data)) {
-        departmentDoctors = departmentResponse.data.data.map(doc => doc.id); // Ruajmë ID-të e doktorëve në departament
-        return getDoctors(); // Kthejmë premtimin për listën e doktorëve
+        departmentDoctors = departmentResponse.data.data.map(doc => doc.id);
+        return getDoctors(); 
       } else {
         console.error("The response structure is not expected:", departmentResponse);
         throw new Error("Invalid response structure");
@@ -35,7 +34,6 @@ onMounted(() => {
       if (allDoctorsResponse.result && Array.isArray(allDoctorsResponse.result.data)) {
         const allDoctors = allDoctorsResponse.result.data;
 
-        // Filtro vetëm doktorët që NUK janë në këtë departament
         doctors.value = allDoctors.filter(doc => !departmentDoctors.includes(doc.id)); 
       } else {
         console.error("The response structure is not expected:", allDoctorsResponse);
@@ -52,7 +50,6 @@ onMounted(() => {
 });
 
 
-//  Shto doktorin në departament
 const addDoctor = async () => {
   if (!selectedDoctor.value) {
     message.value = "Please select a doctor.";

@@ -4,7 +4,6 @@
         <h3 class="text-lg font-semibold mb-4 text-center">Make Payment</h3>
         
         <form @submit.prevent="submit" class="space-y-4">
-          <!-- Payment Method Selection -->
           <div>
             <label for="paymentMethod" class="block font-medium mb-1">Payment Method</label>
             <select id="method_id" v-model="form.payment_method" required
@@ -16,14 +15,11 @@
 </select>
 
           </div>
-  
-          <!-- Amount Input -->
           <div>
             <label for="amount" class="block font-medium mb-1">Amount</label>
             <input v-model="form.amount" type="number" id="amount" required class="input-field" />
           </div>
           
-          <!-- Buttons -->
           <div class="flex justify-between mt-4">
             <button type="submit" class="btn-primary">Pay Now</button>
             <button @click="$emit('close')" class="btn-secondary">Close</button>
@@ -36,7 +32,7 @@
   <script setup>
   import { ref, defineProps, defineEmits, onMounted } from "vue";
   import axios from "axios";
-  import { storePayment } from "@/services/payments.js"; // Import the storePayment function
+  import { storePayment } from "@/services/payments.js"; 
   
   
   // Props
@@ -57,32 +53,28 @@ const appointmentId = ref("123");
   // Emits
   const emit = defineEmits(["close"]);
   
-  // State
   const paymentMethods = ref([]);
   const form = ref({
     amount: 100,
-    payment_method: "",  // Payment method
+    payment_method: "", 
   });
   
-  // Fetch available payment methods
   const fetchPaymentMethods = async () => {
   try {
     const response = await axios.get(`/api/appointments/${appointmentId.value}/payment`);
-    payment_methods.value = response.data.payment_methods; // Nëse përgjigja përmban `payment_methods`
+    payment_methods.value = response.data.payment_methods;
   } catch (error) {
     console.error('Gabim në marrjen e metodave të pagesës:', error);
   }
 };
   
-  // Call this on mount
   onMounted(fetchPaymentMethods);
   
-  // Payment submission
   const submit = () => {
     storePayment(form).then(response => {
       if (response) {
         console.log('Payment Successful:', response);
-        emit("close"); // Close modal after successful payment
+        emit("close"); 
       } else {
         console.log('Payment Failed');
       }

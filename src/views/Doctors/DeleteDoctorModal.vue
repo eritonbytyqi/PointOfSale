@@ -15,14 +15,13 @@ const message = ref("");
 const success = ref(false);
 const showSpinner = ref(false);
 
-// 🔹 Merr listën e doktorëve vetëm për këtë departament
 onMounted(() => {
   showSpinner.value = true;
-  showSpinner.value = true; // Fillon loading
+  showSpinner.value = true; 
 
 getDoctorss(departmentId)
   .then((response) => {
-    console.log("API Response:", response); // Kontrollo përgjigjen e API
+    console.log("API Response:", response); 
 
     if (response.data && Array.isArray(response.data.data)) {
       doctors.value = response.data.data;
@@ -37,7 +36,7 @@ getDoctorss(departmentId)
     doctors.value = [];
   })
   .finally(() => {
-    showSpinner.value = false; //  Sigurohemi që spinner ndalet gjithmonë
+    showSpinner.value = false;
   });
 
 
@@ -50,7 +49,6 @@ const deleteDoctor = async () => {
     return;
   }
 
-  // Sigurohu që tokeni është i vlefshëm
   const token = localStorage.getItem('authToken');
   if (!token) {
     message.value = "No valid authentication token found.";
@@ -60,15 +58,13 @@ const deleteDoctor = async () => {
 
   showSpinner.value = true;
   try {
-    // Thirrja e funksionit deleteDoctorFromDepartment duke kaluar tokenin
     await deleteDoctorFromDepartment(departmentId, selectedDoctor.value, token);
     message.value = "Doctor removed successfully!";
     success.value = true;
-    router.push({ name: "departments" }); // Kthehu te lista e departamenteve
+    router.push({ name: "departments" });
   } catch (error) {
     showSpinner.value = false;
     
-    // Kontrollo nëse gabimi është 404
     if (error.response && error.response.status === 404) {
         message.value = "Doctor not found or something went wrong.";
     } else {
@@ -82,11 +78,7 @@ const deleteDoctor = async () => {
   }
 };
 
-
-
 </script>
-
-
 
 <template>
   <Spinner v-if="showSpinner"/>

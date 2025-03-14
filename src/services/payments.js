@@ -94,7 +94,6 @@ export async function updatePaymentStatus(id, status) {
 
         return null;
     } catch (error) {
-        // Catch any errors and return null if something went wrong
         console.error("Error updating payment status:", error);
         return null;
     }

@@ -15,27 +15,22 @@ const showSpinner = ref(false);
 const newTask = ref("");
 const tasks = ref([]);
 
-// Add new task
 const addTask = () => {
   if (newTask.value.trim() !== "") {
     tasks.value.push(newTask.value);
-    newTask.value = ""; // Clear input after adding
-    // Save tasks to localStorage
+    newTask.value = ""; // Fshije inputin masi shton
     localStorage.setItem('tasks', JSON.stringify(tasks.value));
   }
 };
 
-// Delete a task
 const deleteTask = (index) => {
-  tasks.value.splice(index, 1); // Remove task
-  // Save updated tasks to localStorage
+  tasks.value.splice(index, 1); // Fshije task
   localStorage.setItem('tasks', JSON.stringify(tasks.value));
 };
 
 onMounted(async () => {
   showSpinner.value = true;
   try {
-    // Fetch statistics from stats.js
     doctorsCount.value = await getDoctorsCount();
     departmentsCount.value = await getDepartmentsCount();
     completedAppointments.value = await getCompletedAppointmentsCount();

@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 
-// Lista e doktorëve me përshkrim të shkurtër dhe të plotë
 const doctors = ref([
   {
     id: 1,

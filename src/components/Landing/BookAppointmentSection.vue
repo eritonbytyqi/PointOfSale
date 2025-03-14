@@ -104,7 +104,7 @@ const isFormValid = computed(() => {
  <div class="relative bg-blue-50 py-16 px-4 flex justify-center items-center">
     <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
       <!-- Information section -->
-      <div class="mt-8"> <!-- Përdorimi i mt-8 për ta ngritur pak lart -->
+      <div class="mt-8">
         <h2 class="text-3xl font-bold text-gray-900 mb-4">Book Your Appointment Easily</h2>
         <p class="text-gray-600 mb-6">No long queues, no waiting – secure your appointment in just a few clicks.</p>
         

@@ -2,6 +2,7 @@
 import router from '@/router/index.js';
 import { login, checkEmailExists } from '@/services/auth.js';
 import { reactive } from 'vue';
+import doctorhome from '@/assets/home/doctorhome.jpg';
 
 const form = reactive({
   email: "",
@@ -13,39 +14,34 @@ const errors = reactive({
   password: "",
 });
 
+const backgroundImage = doctorhome; // Background image path
+
 const submit = async () => {
-  // Kontrollo validimin e formës
   if (!validateForm()) return;
 
-  // Kontrollo nëse emaili është i regjistruar
   const emailExists = await checkEmailExists(form.email);
-
-  // Nëse emaili nuk është regjistruar, shfaq gabimin dhe kthehu
   if (emailExists) {
     errors.email = "This email is not registered.";
-    errors.password = ""; // Pastroni gabimin për password-in
+    errors.password = "";
     return;
   } else {
-    errors.email = ""; // Pastroni gabimin për email-in nëse ekziston
+    errors.email = "";
   }
 
-  // Kryej login-in nëse emaili ekziston
   login(form).then(res => {
     if (res) {
       router.push({ name: 'home' });
     } else {
-      errors.password = "Incorrect password."; // Gabim nëse passwordi është gabim
+      errors.password = "Incorrect password.";
     }
   }).catch(() => {
     errors.password = "An error occurred during login.";
   });
 };
 
-// Funksioni i validimit
 const validateForm = () => {
   let isValid = true;
 
-  // Kontrollo passwordin
   if (!form.password) {
     errors.password = "Password is required";
     isValid = false;
@@ -59,67 +55,77 @@ const validateForm = () => {
   return isValid;
 };
 </script>
-
-
-
 <template>
-  <div class="bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <!-- <img class="mx-auto h-10 w-auto" src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company"> -->
-      <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
-    </div>
-
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form @submit.prevent="submit()" class="space-y-6">
-        <!-- Email Field -->
-        <div>
-          <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
-          <div class="mt-2">
-            <input
-              v-model="form.email"
-              type="email"
-              id="email"
-              required
-              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-            />
-<p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
-          </div>
+  <div class="relative flex items-center justify-center min-h-screen">
+    <!-- Background Image me Blur -->
+    <div class="absolute inset-0 bg-cover bg-center" :style="{ backgroundImage: 'url(' + backgroundImage + ')', filter: 'blur(8px)' }"></div>
+    
+    <!-- Form Container -->
+    <div class="w-full max-w-md p-8 bg-white bg-opacity-70 rounded-lg shadow-md relative z-10">
+      <!-- Logo -->
+      <div class="flex justify-center mb-4">
+        <img src="@/assets/logo/quickkk.png" alt="QuickMed Logo" class="w-12 h-12 animate-heartbeat">
+      </div>
+      
+      <!-- Title -->
+      <h2 class="text-2xl font-bold text-center text-blue-900 animate-fade-in">Login</h2>
+      
+      <!-- Form -->
+      <form @submit.prevent="submit" class="mt-4">
+        <!-- Email Input -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 animate-fade-in">Email</label>
+          <input 
+            v-model="form.email" 
+            type="email" 
+            required 
+            class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email }}</p>
         </div>
-
-        <!-- Password Field -->
-        <div>
-          <div class="flex items-center justify-between">
-            <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
-          </div>
-          <div class="mt-2">
-            <input
-              v-model="form.password"
-              type="password"
-              id="password"
-              required
-              class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-            />
-            <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
-          </div>
+        
+        <!-- Password Input -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 animate-fade-in">Password</label>
+          <input 
+            v-model="form.password" 
+            type="password" 
+            required 
+            class="w-full px-4 py-2 mt-1 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
+          />
+          <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password }}</p>
         </div>
-
+        
         <!-- Submit Button -->
-        <div>
-          <button 
-            type="submit" 
-            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
-            Sign in
-          </button>
-        </div>
+        <button type="submit" class="w-full px-4 py-2 text-white bg-blue-500 rounded-lg hover:bg-blue-600 animate-fade-in">Login</button>
       </form>
     </div>
   </div>
 </template>
 
+
 <style scoped>
-/* Optional: Add some styles for error messages */
-p.text-red-500 {
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(0.95); }
+    75% { transform: scale(1.15); }
+}
+
+.animate-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+.animate-heartbeat {
+    animation: heartbeat 1.5s infinite ease-in-out;
+}
+
+.text-red-500 {
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }

@@ -3,7 +3,6 @@ import { ref, reactive, onMounted, watch, computed } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
 import InputText from "@/components/InputText.vue";
 import router from "@/router";
-import eventBus from "@/event-bus";
 
 
 
@@ -76,10 +75,8 @@ const submit = async () => {
   try {
     await post('/api/appointments', form);
 
-    // Dërgo ngjarjen te Event Bus
     router.push("/payments/create/Admin");
   
-router
   } catch (error) {
     console.error("Gabim gjatë krijimit të terminit:", error);
   }
@@ -93,7 +90,7 @@ function getCurrentDate() {
     const year = today.getFullYear();
     const month = String(today.getMonth() + 1).padStart(2, '0'); 
     const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`; // Formatimi: YYYY-MM-DD
+    return `${year}-${month}-${day}`; 
 }
 </script>
 
@@ -151,7 +148,6 @@ function getCurrentDate() {
         </div>
     </div>
 
-    <!-- Modal for Thank You message -->
     <div v-if="showMessage" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 class="text-xl font-semibold text-center mb-4">Thank you for your appointment!</h2>

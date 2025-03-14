@@ -9,27 +9,24 @@ const searchQuery = ref('');
 const showSpinner = ref(false);
 const router = useRouter();
 
-// Function to mark payment as completed
 const markAsCompleted = (paymentId) => {
   const payment = payments.value.find(p => p.id === paymentId);
   if (payment && payment.status !== 'Completed') {
-    // Update status in the database first
     updatePaymentStatus(paymentId, 'Completed')
       .then(() => {
-        // Once the status is updated in the database, update it in the frontend state
         payment.status = 'Completed';
 
-        // Save the completed payment in localStorage to persist across refresh
         let completedPayments = JSON.parse(localStorage.getItem('completedPayments')) || [];
         if (!completedPayments.includes(paymentId)) {
           completedPayments.push(paymentId);
           localStorage.setItem('completedPayments', JSON.stringify(completedPayments));
         }
+      window.location.reload(); 
+ 
+        payment.showCompleteButton = false;
 
-        // Remove the payment from the current list after completing
         payments.value = payments.value.filter(p => p.id !== paymentId);
 
-        // Optional: Refresh the page or give feedback
         setTimeout(() => {
         }, 1000);
       })
@@ -39,12 +36,14 @@ const markAsCompleted = (paymentId) => {
   }
 };
 
-// Function to load payments from the database
 const loadPayments = () => {
   showSpinner.value = true;
   getPayments()
     .then((data) => {
       payments.value = data.result.data;
+
+      const completedPayments = JSON.parse(localStorage.getItem('completedPayments')) || [];
+      payments.value = payments.value.filter(payment => !completedPayments.includes(payment.id)); 
     })
     .catch((error) => {
       console.error('Error fetching payments:', error);
@@ -54,17 +53,22 @@ const loadPayments = () => {
     });
 };
 
-// Load payments on component mount
 onMounted(() => {
   loadPayments();
 });
 
-// Computed property for filtering payments based on the search query
 const filteredPayments = computed(() => {
   return payments.value.filter(payment => 
     payment.appointment?.fullname.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
+
+watch(() => selectedPayment.value.status, (newValue) => {
+  if (newValue === "completed") {
+    window.location.reload();  
+  }
+});
+
 </script>
 
 <template>
@@ -93,7 +97,7 @@ const filteredPayments = computed(() => {
             <th class="px-6 py-3 text-left border-b font-semibold">Amount</th>
             <th class="px-6 py-3 text-left border-b font-semibold">Status</th>
             <th class="px-6 py-3 text-left border-b font-semibold">Method</th>
-            <th class="px-6 py-3 text-left border-b font-semibold">Actions</th> <!-- New column for actions -->
+            <th class="px-6 py-3 text-left border-b font-semibold">Actions</th> 
           </tr>
         </thead>
         <tbody>
@@ -104,16 +108,13 @@ const filteredPayments = computed(() => {
             <td class="px-6 py-3 text-gray-800">{{ payment.status }}</td>
             <td class="px-6 py-3 text-gray-800">{{ payment.payment_method }}</td>
 
-            <!-- Actions: Edit button inside the row, and Complete button -->
             <td class="px-6 py-3 text-gray-800 flex space-x-2">
-              <!-- Edit button inside the row, wrapped with RouterLink -->
               <RouterLink :to="{ name: 'editPayment', params: { id: payment.id } }">
                 <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition-all duration-200">
                   Edit
                 </button>
               </RouterLink>
 
-              <!-- Complete button for marking the payment as completed -->
               <button 
                 v-if="payment.status !== 'Completed'" 
                 @click="markAsCompleted(payment.id)" 
@@ -125,7 +126,6 @@ const filteredPayments = computed(() => {
         </tbody>
       </table>
 
-      <!-- No payments found message -->
       <p v-if="filteredPayments.length === 0" class="text-center text-gray-500 py-4">
         No payments found.
       </p>

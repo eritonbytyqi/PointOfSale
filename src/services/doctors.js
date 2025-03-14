@@ -18,8 +18,8 @@ export const getDoctorss = (departmentId) => {
   }
 export async function showDoctor(id) {
     try {
-        console.log("Doctor ID:", id); // Kontrollo ID-në
-        console.log("API URL:", 'api/doctors/' + id); // Kontrollo URL-në
+        console.log("Doctor ID:", id); 
+        console.log("API URL:", 'api/doctors/' + id); 
         
         return await get('api/doctors/' + id).then(res =>{
                 if(res.status === 200){

@@ -12,7 +12,6 @@ const showModal = ref(false);
 const selectedAppointment = ref(null);
 const router = useRouter();
 
-// Merr terminet nga API dhe cakto statusin nga localStorage
 onMounted(() => {
   showSpinner.value = true;
   getAppointmentsPending()
@@ -30,7 +29,6 @@ onMounted(() => {
     });
 });
 
-// Funksioni për të ndryshuar statusin e një termini
 const changeStatus = async (appointment, status) => {
   try {
     const response = await updateAppointmentStatus(appointment.id, status);
@@ -46,7 +44,6 @@ const changeStatus = async (appointment, status) => {
   }
 };
 
-// Konfirmimi i ndryshimit të statusit
 const confirmAction = () => {
   if (selectedAction.value && selectedAppointment.value) {
     changeStatus(selectedAppointment.value, selectedAction.value);
@@ -54,7 +51,6 @@ const confirmAction = () => {
   showModal.value = false;
 };
 
-// Hap modalin për konfirmim
 const openModal = (appointment, action) => {
   selectedAppointment.value = appointment;
   selectedAction.value = action;
@@ -66,7 +62,6 @@ const actionTexts = {
   canceled: "cancel"
 };
 
-// Teksti i modalit
 const modalText = computed(() => {
   if (selectedAction.value) {
     return `Are you sure you want to ${actionTexts[selectedAction.value]} this appointment?`;
@@ -74,7 +69,6 @@ const modalText = computed(() => {
   return "";
 });
 
-// Kontrollo tekstin e butonit
 const buttonText = (appointment) => {
   return appointment.status === 'confirmed' ? 'confirmed' : 'confirm';
 };
@@ -139,7 +133,6 @@ const buttonTexxt = (appointment) => {
       </table>
     </div>
     
-    <!-- Modal për konfirmim -->
     <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div class="bg-white p-6 rounded shadow-lg">
         <p class="text-lg mb-4">{{ modalText }}</p>

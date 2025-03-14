@@ -2,13 +2,9 @@
 import { ref, reactive, onMounted } from "vue";
 import { get, post } from "@/composable/useApi.js"; 
 import InputText from "@/components/InputText.vue";
-
-
-
-
-
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+
 const route= useRoute();
 const appointmentId=ref(null);
 const formattedAmount = computed(() => `${form.amount} €`);
@@ -19,7 +15,6 @@ onMounted(()=>
     console.log("appointmentId", appointmentId.value)
 }
 )
-// const appointmentId= route.query.appointment_id;
  console.log("appointment id",appointmentId)
 const form = reactive({
 amount: "$10.00",
@@ -28,17 +23,15 @@ amount: "$10.00",
    
 });
 
-// Lista e departamenteve që do të mbushet nga API
 const message = ref("");
 const success = ref(false);
 
-// Funksioni për të ruajtur një takim
 const submit = async () => {
     try {
         console.log("te dhendat po dergohen", form, "appId", appointmentId);
         const response = await post('/api/appointments/${appointmentId}/payments', form);
         if (response.status== 201){
-console.log("pagesa u krye me sukses");
+        console.log("pagesa u krye me sukses");
         }
         message.value = "payment created successfully!";
         success.value = true;
@@ -49,7 +42,6 @@ console.log("pagesa u krye me sukses");
     
     console.error("Gabim gjatë krijimit të pagesës:", error);
 
-    // Kontrollo nëse ka një përgjigje nga serveri
     if (error.response) {
         console.error("Status Code:", error.response.status);
         console.error("Response Data:", error.response.data);
@@ -60,7 +52,7 @@ console.log("pagesa u krye me sukses");
 </script>
 
   <template>
-    <div class="py-10 min-h-screen bg-gray-100 flex justify-center items-center">
+    <div class="py-10 min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 shadow-lg flex justify-center items-center">
         <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
             <h1 class="text-2xl font-semibold text-gray-800 mb-6">Create payment</h1>
 
@@ -85,7 +77,7 @@ console.log("pagesa u krye me sukses");
         class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
         <option value="" disabled>Select a payment method</option>
         <option value="cash">Cash</option>
-        <option value="paypal">Paypal</option>
+        <option value="paypal">Paypall</option>
         <option value="credit_card">Credit Card</option>
     </select>
 </div>

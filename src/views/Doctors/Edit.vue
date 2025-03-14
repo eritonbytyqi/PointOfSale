@@ -18,7 +18,6 @@ const showSpinner = ref(false);
 const message = ref("");
 const success = ref(false);
 
-// Funksioni për ruajtjen e ndryshimeve
 const submit = async () => {
     
   try {
@@ -26,7 +25,7 @@ const submit = async () => {
     if (response) {
       message.value = "Doctor updated successfully!";
       success.value = true;
-      router.push({ name: "doctors" }); // Kthehet tek lista e doktorëve
+      router.push({ name: "doctors" }); 
     }
   } catch (error) {
     message.value = "Error updating doctor.";
@@ -35,11 +34,10 @@ const submit = async () => {
   }
 };
 
-// Merr të dhënat e doktorit kur ngarkohet faqja
 onMounted(() => {
 
     console.log("Route params onMounted:", route.params); 
-  console.log("Doctor ID onMounted:", route.params.id); // Debugging
+  console.log("Doctor ID onMounted:", route.params.id);
 
   showSpinner.value = true;
   showDoctor(route.params.id)

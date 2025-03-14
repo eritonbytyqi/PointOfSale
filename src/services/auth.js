@@ -29,10 +29,10 @@ export async function login(form) {
 export const checkEmailExists = async (email) => {
     try {
         const response = await axios.post('/api/check-email', { email });
-        return response.data.exists; // Returns true if the email exists, false if not
+        return response.data.exists;
     } catch (error) {
         console.error(error);
-        return false;  // In case of an error, return false
+        return false;
     }
 };
 export async function logout(form) {

@@ -15,7 +15,6 @@ const showSpinner = ref(false);
 const message = ref("");
 const success = ref(false);
 
-// Funksioni për ruajtjen e ndryshimeve
 const submit = async () => {
     
   try {
@@ -23,7 +22,7 @@ const submit = async () => {
     if (response) {
       message.value = "Department updated successfully!";
       success.value = true;
-      router.push({ name: "departments" }); // Kthehet tek lista e departamenteve
+      router.push({ name: "departments" }); 
     }
   } catch (error) {
     message.value = "Error updating department.";
@@ -32,11 +31,10 @@ const submit = async () => {
   }
 };
 
-// Merr të dhënat e departamentit kur ngarkohet faqja
 onMounted(() => {
 
     console.log("Route params onMounted:", route.params); 
-  console.log("Department ID onMounted:", route.params.id); // Debugging
+    console.log("Department ID onMounted:", route.params.id); 
 
   showSpinner.value = true;
   showDepartment(route.params.id)

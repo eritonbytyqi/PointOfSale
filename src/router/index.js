@@ -22,7 +22,7 @@ import PaymentSection from '@/components/Landing/PaymentSection.vue'
 import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
 import Login from '@/views/Auth/Login.vue'
 
-import logout  from '@/views/Auth/Logout.vue'
+import Logout  from '@/views/Auth/Logout.vue'
 
 import Home from "@/views/Home/Index.vue"
 import PendingAppointment from '@/views/Appointments/PendingAppointment.vue'
@@ -45,7 +45,7 @@ const router = createRouter({
     {
       path: '/logout',
       name: 'logout',
-     component: logout,
+     component: Logout,
     },
     {
       path: '/landing',

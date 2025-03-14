@@ -12,7 +12,6 @@ const showModal = ref(false);
 const selectedAppointment = ref(null);
 const router = useRouter();
 
-// Merr terminet nga API dhe cakto statusin nga localStorage
 onMounted(() => {
   showSpinner.value = true;
   getAppointmentsConfirmed()
@@ -30,7 +29,6 @@ onMounted(() => {
     });
 });
 
-// Funksioni për të ndryshuar statusin e një termini
 const changeStatus = async (appointment, status) => {
   try {
     const response = await updateAppointmentStatus(appointment.id, status);
@@ -46,7 +44,6 @@ const changeStatus = async (appointment, status) => {
   }
 };
 
-// Konfirmimi i ndryshimit të statusit
 const confirmAction = () => {
   if (selectedAction.value && selectedAppointment.value) {
     changeStatus(selectedAppointment.value, selectedAction.value);
@@ -54,7 +51,6 @@ const confirmAction = () => {
   showModal.value = false;
 };
 
-// Hap modalin për konfirmim
 const openModal = (appointment, action) => {
   selectedAppointment.value = appointment;
   selectedAction.value = action;
@@ -65,7 +61,6 @@ const actionTexts = {
   completed: "complete",
 };
 
-// Teksti i modalit
 const modalText = computed(() => {
   if (selectedAction.value) {
     return `Are you sure you want to ${actionTexts[selectedAction.value]} this appointment?`;
@@ -73,7 +68,6 @@ const modalText = computed(() => {
   return "";
 });
 
-// Kontrollo tekstin e butonit
 const buttonText = (appointment) => {
   return appointment.status === 'completed' ? 'Completed' : 'Complete';
 };
@@ -109,8 +103,6 @@ const buttonText = (appointment) => {
               :key="appointment.id"
               :class="{
                 'bg-green-100': appointment.status === 'completed',
-                // 'bg-red-200': appointment.status === 'canceled',
-                // 'bg-orange-200': appointment.status === 'confirmed'
               }">
             <td class="px-3 py-2 text-base">{{ appointment.department.name }}</td>
             <td class="px-3 py-2 text-base">{{ appointment.fullname }}</td>
@@ -132,36 +124,13 @@ const buttonText = (appointment) => {
       </table>
     </div>
     
-    <!-- Modal për konfirmim -->
     <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
       <div class="bg-white p-6 rounded shadow-lg">
         <p class="text-lg mb-4">{{ modalText }}</p>
         <div class="flex justify-center space-x-2">
-          <!-- <button @click="showModal = false" class="px-4 py-2 bg-gray-300 rounded">Cancel</button> -->
           <button @click="confirmAction" class="px-4 py-2 bg-green-700 text-white rounded">Complete</button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
-<!-- Controllerat mashum kan tbojn me menaxhimin e kerkesave http. dmth e marrin kerkesen nga frontendi apo klienti dhe e perpunojn dhe kthen nje pergjigje zakonisht nje Resource apo nje response zakonisht json per klientin. 
-Requests perdoren me i validu tdhanat qe vijn nga klienti.
-Serviset kan tbojn me biznes logjiken e projektit dmth me veprime qe kan tbojn me userin psh me regjistru, me ndrru pass, me caktu role etj.
-Resources perdoren psh per me kqyr se a osht empty apo a ka collection dmth gru -->
-
-<!-- 
-Resources perdoren psh per me kqyr se a osht empty apo a ka collection dmth grup t objekteve.
-Trait osht ni logjik qe mujm me riperdor nklasa tndryshme pa trashegu klas tjeter.
-Repositories perdoren shpesh me serviset, ajo veq e ndan logjiken e aksesit ne te dhena nga Models edhe krijon arkitektur ma tpastert. pra me DB queries -->
-<!-- 
-
-Models perfaqsojn tabelen e bazes se tdhenave dhe gjithashtu menaxhon lidhjet apo relations midis tyre.
-Config sherben per menaxhimin e lidhjes me databaz, konfigurimin e cache apo sesioneve, autentifikimin edhe autorizimin, sherbime tjashtme si Mail.
-prit
-Route::get() perdoret kur kemi edhe url ndersa Route::post() kur e kemi metoden post
-
-.env sbohet push ngit per qato e krijojm .env.example pa pjeset e ndjeshme si APP_KEY
-
-API kthen vetem json psh api/users -->

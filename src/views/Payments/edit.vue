@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { showPayment, updatePayment } from "@/services/payments.js"; // Make sure these services are correct
+import { showPayment, updatePayment } from "@/services/payments.js"; 
 import { useRoute } from "vue-router";
 import router from "@/router/index.js";
 import Spinner from "@/components/Spinner.vue";
@@ -10,7 +10,7 @@ const route = useRoute();
 const form = reactive({
   amount: "",
   payment_method: "",
-  status: "", // Ensure status is included
+  status: "",
 });
 
 const showSpinner = ref(false);
@@ -19,9 +19,8 @@ const success = ref(false);
 
 const submit = async () => {
   try {
-    console.log('Form data being submitted:', form); // Debugging line
+    console.log('Form data being submitted:', form); 
 
-    // Ensure all required fields are present before calling updatePayment
     if (!form || !form.status) {
       console.error('Form is missing status or required fields.');
       message.value = 'Error: Payment data is incomplete.';
@@ -33,7 +32,7 @@ const submit = async () => {
     if (response) {
       message.value = 'Payment updated successfully!';
       success.value = true;
-      router.push({ name: 'payments' }); // Redirect to payments list after successful update
+      router.push({ name: 'payments' }); 
     }
   } catch (error) {
     message.value = 'Error updating payment.';
@@ -42,11 +41,10 @@ const submit = async () => {
   }
 };
 
-// Fetch payment data on page load
 onMounted(() => {
   if (!route.params.id) {
     console.error("Payment ID is not provided in the route.");
-    return; // Exit early if id is not available
+    return; 
   }
 
   showSpinner.value = true;
@@ -55,10 +53,9 @@ onMounted(() => {
       console.log("Response from showPayment:", res);
 
       if (res && res.result) {
-        // Ensure the amount, payment_method, and status fields are assigned properly
         form.amount = res.result.amount || '';
         form.payment_method = res.result.payment_method || '';
-        form.status = res.result.status || ''; // Ensure status is also set
+        form.status = res.result.status || ''; 
       }
     })
     .finally(() => {

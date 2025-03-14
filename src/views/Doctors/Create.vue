@@ -14,7 +14,6 @@ const success = ref(false);
 
 const submit = async () => {
     try {
-        // 🔹 Kontrollo nëse API përgjigja ka të dhëna të sakta
         const existingDoctorsResponse = await get('/api/doctors');
         console.log("Existing Doctors Response:", existingDoctorsResponse);
 
@@ -24,7 +23,6 @@ const submit = async () => {
 
         const existingDoctors = existingDoctorsResponse.data.result.data;
 
-        // Kontrollo nëse doktori tashmë ekziston
         const doctorExists = existingDoctors.some(doctor => 
             doctor.name.toLowerCase() === form.name.toLowerCase() &&
             doctor.surname.toLowerCase() === form.surname.toLowerCase()
@@ -33,10 +31,9 @@ const submit = async () => {
         if (doctorExists) {
             message.value = "Doctor already exists!";
             success.value = false;
-            return; // Mos e dërgo kërkesën nëse doktori ekziston
+            return;
         }
         
-        // Nëse nuk ekziston, krijo doktorin
         await post('/api/doctors', form);
         message.value = "Doctor created successfully!";
         success.value = true;

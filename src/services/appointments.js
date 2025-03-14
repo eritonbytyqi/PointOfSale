@@ -67,7 +67,6 @@ export async function storeAppointmentClient(form) {
     }
 }
 export const updateAppointmentStatus = async (id, status) => {
-    // Kontrollo që statusi është një nga vlerat e mundshme
     const validStatuses = ['pending', 'confirmed', 'completed', 'canceled'];
     if (!validStatuses.includes(status)) {
         console.error('Invalid status value:', status);

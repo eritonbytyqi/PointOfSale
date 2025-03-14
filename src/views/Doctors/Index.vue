@@ -69,7 +69,6 @@ onMounted(() => {
             <td class="px-6 py-4">{{ doctor.surname }}</td>
             <td class="px-6 py-4">{{ doctor.phone }}</td>
             <td class="px-6 py-4">{{ doctor.description }}</td>
-            <!-- Me i shfaq edhe departamentet e doktorit -->
             <td class="px-6 py-4">
             <span v-for="(department, index) in doctor.departments" :key="department.id">
             {{ department.name }} 
@@ -100,48 +99,18 @@ onMounted(() => {
     
     <script>
     export default {
-      data() {
-        return {
-          employees: [
-            {
-              department: 'HR',
-              fullName: 'John Doe',
-              email: 'john.doe@example.com',
-              phoneNumber: '+1234567890',
-              personalId: 'A12345678',
-              date: '2025-02-28',
-              time: '09:00 AM',
-            },
-            {
-              department: 'Finance',
-              fullName: 'Jane Smith',
-              email: 'jane.smith@example.com',
-              phoneNumber: '+0987654321',
-              personalId: 'B87654321',
-              date: '2025-02-28',
-              time: '10:00 AM',
-            },
-            // Add more sample data here as needed
-          ]
-        };
-      },
       methods: {
-        // Navigate to the "Create Appointment" page
         navigateToCreateDoctor() {
           this.$router.push('/doctors/create');
         },
     
-        // Handle the "Edit" button click
         editDoctor(doctors) {
-          // Navigate to the edit page with the appointment details
           this.$router.push({ name: 'doctors-edit', params: { id: doctors.personalId } });
         },
     
-        // Handle the "Delete" button click
         deleteDoctor(index) {
-          // Ask for confirmation before deleting
           if (confirm('Are you sure you want to delete this doctor?')) {
-            this.employees.splice(index, 1); // Remove the appointment from the list
+            this.employees.splice(index, 1); 
           }
         }
       }
@@ -149,13 +118,11 @@ onMounted(() => {
     </script>
     
     <style scoped>
-    /* Adding some basic styles for better presentation */
     
     body {
       font-family: 'Inter', sans-serif;
     }
     
-    /* Table Styling */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -185,7 +152,6 @@ onMounted(() => {
       background-color: #f9fafb;
     }
     
-    /* Add some spacing for the button */
     button {
       transition: background-color 0.2s ease, transform 0.2s ease;
     }
@@ -194,13 +160,11 @@ onMounted(() => {
       transform: scale(1.05);
     }
     
-    /* Make the table's rows a bit larger for better readability */
     tbody tr {
       font-size: 1rem;
       color: #6b7280;
     }
-    
-    /* Use softer background for the page */
+  
     .bg-gray-50 {
       background-color: #f9fafb;
     }
