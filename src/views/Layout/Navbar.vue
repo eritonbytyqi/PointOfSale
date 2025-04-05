@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-gradient-to-r from-blue-100 to-blue-10 border-gray-200 dark:bg-gray-900 mb-4">
+  <nav>
       <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         
         <div class="relative ml-auto">
@@ -33,7 +33,6 @@
   <script setup>
 
 import { useRouter } from 'vue-router'; // Import Vue Router
-import { logout } from '@/services/auth'; // Import the logout function
 import {ref} from 'vue'
 const router = useRouter();
 
@@ -45,15 +44,7 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
-// Function to logout and redirect
-const logoutAndRedirect = async () => {
-  try {
-    await logout(); // Call the logout function
-    router.push('/landing'); // Redirect to the login page
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
-};
+
 
 
 </script>
@@ -79,4 +70,5 @@ const logoutAndRedirect = async () => {
   
   /* Ensure dropdown stays hidden when isDropdownOpen is false */
   </style>
+
   

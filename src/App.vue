@@ -1,22 +1,16 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
+<!-- App.vue -->
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header> -->
-
-  <RouterView />
+  <div>
+    <nav>
+    </nav>
+    <router-view /> <!-- Ky është vendi ku shfaqen përmbajtjet e faqeve të ndryshme -->
+  </div>
 </template>
 
+<script setup>
+// Mund të shtoni logjikën tuaj këtu
+</script>
+
+<style scoped>
+/* Stilet për navbar-in ose aplikacionin mund të vendosen këtu */
+</style>

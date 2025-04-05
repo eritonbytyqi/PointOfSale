@@ -1,11 +1,11 @@
 <template>
   <!-- Main container -->
-  <div class="flex min-h-screen bg-gradient-to-r from-blue-100 to-blue-100">
+  <div class="flex  min-h-screen bg-green-100">
     <!-- Sidebar -->
-    <Sidebar class="fixed w-64 h-screen" />
+    <Sidebar class="fixed w-[360px] h-screen bg-green-800 text-white" />
 
     <!-- Main content area -->
-    <div class="flex-1 p-4 ml-64">
+    <div class="flex-1 p-4 ml-64 bg-green-50">
       <!-- Topbar with Profile -->
       <Navbar />
 
@@ -25,8 +25,6 @@ import { watchEffect } from "vue";
 
 const { notify } = useNotification();  // Inicializoni notify për të përdorur notifikimet
 
-
-
 export default {
   name: "MainLayout",
   components: {
@@ -37,24 +35,69 @@ export default {
 </script>
 
 <style scoped>
-/* Sidebar adjustments */
-/* Remove sidebar styles here since it's now imported from Sidebar.vue */
-
-/* Profile Dropdown adjustments */
-.relative {
-  position: relative;
+/* Apply background color for the entire page */
+html, body {
+  height: 100%; /* Ensure that the page takes full height */
+  margin: 0;    /* Remove default margin */
+  padding: 0;   /* Ensure no padding on body */
+  background-color: #1a202c; /* Dark background for the whole page */
+  border: none; /* Ensure there's no border */
 }
 
-.absolute {
-  position: absolute;
+/* Layout main container with custom green background */
+.flex {
+  display: flex;
 }
 
-.right-0 {
-  right: 0;
+.bg-green-100 {
+  background-color: #d4f8e8;  /* Light green background */
 }
 
-/* Add hover effect for the profile dropdown */
-.relative:hover .group-hover\:block {
-  display: block;
+/* Sidebar styling */
+.fixed {
+  position: fixed;
+}
+
+.w-64 {
+  width: 16rem;
+}
+
+.h-screen {
+  height: 100vh;
+}
+
+.bg-green-800 {
+  background-color: #2f855a;  /* Dark green for sidebar */
+}
+
+.text-white {
+  color: white;
+}
+
+/* Main content area */
+.flex-1 {
+  flex: 1;
+}
+
+.ml-64 {
+  margin-left: 16rem; /* Leave space for the sidebar */
+}
+
+.bg-green-50 {
+  background-color: #f0fdf4; /* Light green background for content */
+}
+
+/* Navbar and content container */
+.max-w-6xl {
+  max-width: 72rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.p-4 {
+  padding: 1rem;
 }
 </style>

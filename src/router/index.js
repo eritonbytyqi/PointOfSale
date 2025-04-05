@@ -1,174 +1,108 @@
- import { createRouter, createWebHistory } from 'vue-router'
- import LandingPage from '../views/LandingPage.vue'
-import HomeView from '../views/HomeView.vue'
-import CreateAppointment from "@/views/Appointments/Create.vue"
-import AppLayout from "@/views/Layout/AppLayout.vue"  
-import Appointments from "@/views/Appointments/Index.vue"
-import CreateDoctor from "@/views/Doctors/Create.vue"
-import Doctors from "@/views/Doctors/Index.vue"
-import Payment from "@/views/Payments/Index.vue"
-import EditDoctor from "@/views/Doctors/Edit.vue"
-import Departments from "@/views/Departments/Index.vue"
-import EditDepartment from "@/views/Departments/Edit.vue"
-import EditPayment from "@/views/Payments/Edit.vue"
-import CreateDepartment from "@/views/Departments/Create.vue"
-import AddDoctor from '@/views/Doctors/AddDoctor.vue'
-import DeleteDoctor from '@/views/Doctors/DeleteDoctorModal.vue'
-import CreatePayment from '@/views/Payments/Create.vue'
-import CreateAdminPayment from '@/views/Payments/CreateAdmin.vue'
-
-import BookAppointment from '@/components/Landing/BookAppointmentSection.vue'
-import PaymentSection from '@/components/Landing/PaymentSection.vue'
-import ConfirmedAppointment from '@/views/Appointments/ConfirmedAppointment.vue'
-import Login from '@/views/Auth/Login.vue'
-
-import Logout  from '@/views/Auth/Logout.vue'
-
-import Home from "@/views/Home/Index.vue"
-import PendingAppointment from '@/views/Appointments/PendingAppointment.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import FolderView from '@/views/folders.vue';
+import AppLayout from '@/views/Layout/AppLayout.vue';
+import CreateProduct from '@/views/produktet/Create.vue';
+import Stoku from '@/views/Stoku/index.vue';
+import Klientet from '@/views/Klientet/index.vue';
+import EditKlienti from '@/views/Klientet/Edit.vue';
+import CreateKlient from '@/views/Klientet/Create.vue';
+import Shitjet from '@/views/Shitjet/index.vue';
+import EditShitja from '@/views/Shitjet/Edit.vue';
+import CreateShitje from '@/views/Shitjet/Create.vue';
+import CreateStok from '@/views/Stoku/Create.vue';
+import raportimet from '@/views/Raportimet/raportimet.vue';
 
 
+const routes = [
+  {
+    path: '/',
+    name: 'Layout',
+    component: AppLayout,
+    children: [
+      {
+        path: 'folders', // Kjo rrugë tani është relative
+        name: 'Folders',
+        component: () => import('@/views/folders.vue'),
+      },
+      {
+        path: 'folder/:folderId',
+        name: 'FolderProducts',
+        component: FolderView,
+        props: true,
+      },
+      {
+        path: '/folders/:folderId/subfolders/:subfolderId/products',
+        name: 'createProduct',
+        component: CreateProduct,
+      },
+      {
+        path: '/Stoku',
+        name: 'stoku',
+        component: Stoku,
+      }
+,
 
+{
+  path: '/raportimet',
+  name: 'raportimet',
+  component: raportimet,
+},
+{
+  path: '/Create/stok',
+  name: 'CreateStok',
+  component: CreateStok,
+}
+,
+
+
+      {
+        path: '/klientet',
+        name: 'klientet',
+        component: Klientet,
+      },      {
+        path: '/edit/:id',
+        name: 'editKlient',
+        component: EditKlienti,
+      },
+
+      {
+        path: '/create/klient',
+        name: 'CreateKlient',
+        component: CreateKlient,
+      }
+      ,
+
+      {
+        path: '/shitjet',
+        name: 'shitjet',
+        component: Shitjet,
+      },
+      {
+        path: '/shitjet/edit/:id',
+        name: 'editShitja',
+        component: EditShitja,
+      },
+
+
+      {
+        path: '/create-shitje',
+        name: 'CreateShitje',
+        component: CreateShitje,
+      },
+
+      
+      {
+        path: '/folder/:subfolderId/subfolder/:folderId',
+        name: 'SubfolderProducts',
+        component: FolderView,
+      },
+    ],
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      redirect: '/landing'   
-    },
-    {
-      path: '/login',
-      name: 'login',
-     component: Login,
-    },
-    {
-      path: '/logout',
-      name: 'logout',
-     component: Logout,
-    },
-    {
-      path: '/landing',
-      name: 'landing',
-      component: LandingPage,
-    },
-    {
-      path: '/landing/BookAppointment',
-      name: 'bookAppointmentLanding',
-      component: BookAppointment,
-    },
-    {
-      path: '/landing/Payment',
-      name: 'paymentLanding',
-      component: PaymentSection,
-    },
-    {
-      path: '/payments/create',
-      name: 'createPayment',
-      component: CreatePayment,
-    },
+  routes,
+});
 
-    {
-      path: '/home',
-      name: 'layout',
-      component: AppLayout,
-      children: [
-        {
-          path: '/appointments',
-          name: 'appointments',
-          component: Appointments,
-        },
-        {
-
-          path: '/payments/:id/edit',
-          name: 'editPayment',
-          component: EditPayment,
-        },
-        {
-          path: '/home',
-          name: 'home',
-          component: Home,
-
-        },
-        {
-          path: '/appointments/create',
-          name: 'createAppointment',
-          component: CreateAppointment,
-        },
-
-        {
-          path: '/appointments/confirmed',
-          name: 'confirmed-appointments',
-          component: ConfirmedAppointment,
-        },
-        {
-          path: '/appointments/pending',
-          name: 'pending-appointments',
-          component: PendingAppointment,
-        },
-      
-        {
-          path: '/payments',
-          name: 'payments',
-          component: Payment,
-        },
-        {
-          path: '/payments/create/Admin',
-          name: 'createAdminPayment',
-          component: CreateAdminPayment,
-        },
-        {
-          path: "/appointments/confirmed",
-          name: "appointments.confirmed",
-          component: Appointments,
-        },
-        {
-          path: '/doctors',
-          name: 'doctors',
-          component: Doctors,
-        },
-
-        {
-          path: '/doctors/create',
-          name: 'createDoctor',
-          component: CreateDoctor,
-        },
-
-        {
-          path: '/doctors/:id/edit',
-          name: 'editDoctor',
-          component: EditDoctor,
-        },
-        {
-          path: '/departments',
-          name: 'departments',
-          component: Departments,
-        },
-        {
-          path: '/departments/create',
-          name: 'createDepartment',
-          component: CreateDepartment,
-        },
-        {
-          path: '/departments/:id/edit',
-          name: 'editDepartment',
-          component: EditDepartment,
-        },
-        {
-            path: 'departments/:departmentId/add-doctor',
-            name: 'addDoctor',
-            component: AddDoctor,
-         },
-         {
-          path: 'departments/:departmentId/delete-doctor',
-          name: 'deleteDoctor',
-          component: DeleteDoctor,
-       },
-
-      ]
-    },
-  ],
-})
-
-export default router
-
+export default router;
