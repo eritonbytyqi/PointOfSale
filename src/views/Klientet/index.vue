@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { getProducts } from '@/services/products.js'; // Sigurohuni që importoni 'getProducts'
-import DeleteModal from "@/views/Klientet/DeleteKlientModal.vue";
 import { getKlientet } from '@/services/klientet';
 import router from '@/router';
 
